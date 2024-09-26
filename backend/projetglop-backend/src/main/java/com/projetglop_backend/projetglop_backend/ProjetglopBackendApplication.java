@@ -1,13 +1,13 @@
-package com.projetglop.projetglop;
+package com.projetglop_backend.projetglop_backend;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ProjetglopApplication {
+public class ProjetglopBackendApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ProjetglopApplication.class, args);
+		SpringApplication.run(ProjetglopBackendApplication.class, args);
 	}
 
 }
