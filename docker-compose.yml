@@ -14,9 +14,9 @@ services:
       - .env
     depends_on:
       - postgres-db
-    command:  ["sh", "-c", "./wait-for-it.sh postgres-db:5432 -- java -jar app.jar"]
+    command:  ["sh", "-c", "./wait-for-it.sh postgres-db-assurances:5432 -- java -jar app.jar"]
 
-  postgres-db:
+  postgres-db-assurances:
     image: postgres
     env_file:
       - .env
