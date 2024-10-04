@@ -6,32 +6,33 @@ on:
       - main
 
 jobs:
-  build-and-test:
+  compile:
     runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Install frontend dependencies
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      # Set up JDK for compilation
+      - name: Set up JDK 21
+        uses: actions/setup-java@v3
         with:
-          node-version: '20'
+          java-version: '21'
 
-      # Run frontend tests
-      #- name: Run Frontend Tests
-      #  working-directory: ./frontend/projetglop-frontend
-      #  run: |
-      #    npm install
-      #    npm run cypress:run
-
-      - name: Test Frontend Setup # for testing the cicd
-        working-directory: ./frontend/projetglop-frontend
+      # Compile the backend project
+      - name: Compile Backend Project
+        working-directory: ./backend/projetglop-backend
         run: |
-            echo "Testing Frontend: Initializing project"
-            npm init -y
-            echo "Frontend setup test succeeded"
+          mvn clean compile
+          echo "Compilation successful"
+
+  build-and-test:
+    runs-on: ubuntu-latest
+    needs: compile
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
 
       # Set up JDK for backend tests
       - name: Set up JDK 21
@@ -49,12 +50,13 @@ jobs:
       - name: Test Backend Setup # for testing the cicd
         working-directory: ./backend/projetglop-backend
         run: |
-            echo "Testing Backend: Verifying Maven installation"
-            mvn -version
-            echo "Backend setup test succeeded"
+          echo "Testing Backend: Verifying Maven installation"
+          mvn -version
+          echo "Backend setup test succeeded"
 
   sonarQube:
     runs-on: ubuntu-latest
+    needs: compile
 
     steps:
       # Step 1: Checkout the repository
@@ -68,9 +70,9 @@ jobs:
           distribution: 'temurin'
           java-version: '21'
 
-      # Step 3: Install SonarQube Scanner
-      #- name: Install SonarQube Scanner
-      # run: |
+    # Step 3: Install SonarQube Scanner
+    #- name: Install SonarQube Scanner
+     # run: |
       #    curl -sSLo sonar-scanner-cli.zip https://binaries.sonarsource.com/Distribution/sonar-scanner-cli/sonar-scanner-cli-4.7.0.2747-linux.zip
       #    unzip sonar-scanner-cli.zip
       #    mv sonar-scanner-4.7.0.2747-linux sonar-scanner
@@ -78,9 +80,9 @@ jobs:
 
       - name: Test SonarQube Setup # for testing the cicd
         run: |
-            echo "Testing SonarQube installation..."
-            echo "Skipping actual installation and analysis for testing"
-            echo "SonarQube setup test succeeded"
+          echo "Testing SonarQube installation..."
+          echo "Skipping actual installation and analysis for testing"
+          echo "SonarQube setup test succeeded"
 
       # Step 4: Run SonarQube Scanner
       #- name: Run SonarQube Scanner
@@ -94,4 +96,4 @@ jobs:
 
       - name: Skip SonarQube Analysis # for testing the cicd
         run: |
-            echo "Skipping actual SonarQube analysis for now"
+          echo "Skipping actual SonarQube analysis for now"
