@@ -115,8 +115,6 @@ jobs:
         run: |
           wget https://infotuto.univ-lille.fr/fileadmin/user_upload/infotuto/images/DSI/Fichiers_telechargeables/Clients_VPN/ULILLE_VPN_ETUDIANT_Linux_v4.zip
           unzip ULILLE_VPN_ETUDIANT_Linux_v4.zip
-      - name: List files in the current directory
-        run: pwd
 
       - name: OpenVPN-Connect
         uses: kota65535/github-openvpn-connect-action@v2.1.0
@@ -125,8 +123,11 @@ jobs:
           username: ${{ secrets.VPN_USERNAME }}
           password: ${{ secrets.VPN_PASSWORD }}
 
+      - name: Create ma-paire.pem file
+        run: echo "${{ secrets.MA_PAIRE_PEM }}" | base64 --decode > ma-paire.pem
+
       - name: Set permissions for private key
-        run: chmod 600 ./ma-paire.pem
+        run: chmod 600 C:\Users\Rawan\Desktop\Projet-Glop-backend\ma-paire.pem
 
       - name: Stop and Remove Existing Container
         run: |
