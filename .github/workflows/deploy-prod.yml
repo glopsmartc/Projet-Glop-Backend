@@ -1,9 +1,10 @@
 name: CI/CD Pipeline Prod
 
 on:
-  pull_request:
+  push:
     branches:
       - main
+
 env:
   IP_ADDRESS_BACK: ${{ secrets.IP_ADDRESS_BACK }}
 
