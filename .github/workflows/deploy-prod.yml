@@ -115,6 +115,8 @@ jobs:
         run: |
           wget https://infotuto.univ-lille.fr/fileadmin/user_upload/infotuto/images/DSI/Fichiers_telechargeables/Clients_VPN/ULILLE_VPN_ETUDIANT_Linux_v4.zip
           unzip ULILLE_VPN_ETUDIANT_Linux_v4.zip
+      - name: List files in the current directory
+        run: ls -la
 
       - name: OpenVPN-Connect
         uses: kota65535/github-openvpn-connect-action@v2.1.0
