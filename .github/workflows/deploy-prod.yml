@@ -139,4 +139,4 @@ jobs:
 
       - name: Run New Backend Container
         run: |
-          ssh -i ma-paire.pem -o StrictHostKeyChecking=no ubuntu@$IP_ADDRESS_BACK 'sudo docker run -d --name backend-container -p 8080:8080 ${{ secrets.DOCKER_USERNAME }}/glop-backend:${{ github.sha }}'
+          ssh -i ma-paire.pem -o StrictHostKeyChecking=no ubuntu@$IP_ADDRESS_BACK 'sudo docker run -d --name backend-container -p 80:8080 ${{ secrets.DOCKER_USERNAME }}/glop-backend:${{ github.sha }}'
