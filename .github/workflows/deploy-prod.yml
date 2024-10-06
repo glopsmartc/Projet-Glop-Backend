@@ -129,9 +129,9 @@ jobs:
       - name: Set permissions for private key
         run: chmod 600 ma-paire.pem
 
-      - name: Stop and Remove Existing Container
-        run: |
-          ssh -i ma-paire.pem -o StrictHostKeyChecking=no ubuntu@$IP_ADDRESS_BACK 'sudo docker stop backend-container || true && sudo docker rm backend-container || true'
+      #- name: Stop and Remove Existing Container
+      # run: |
+      #    ssh -i ma-paire.pem -o StrictHostKeyChecking=no ubuntu@$IP_ADDRESS_BACK 'sudo docker stop backend-container || true && sudo docker rm backend-container || true'
 
       - name: Pull Backend Docker Image
         run: |
