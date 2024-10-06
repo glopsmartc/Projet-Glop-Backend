@@ -124,10 +124,10 @@ jobs:
           password: ${{ secrets.VPN_PASSWORD }}
 
       - name: Create ma-paire.pem file
-        run: echo "${{ secrets.MA_PAIRE_PEM }}" | base64 --decode > ma-paire.pem
+        run: echo "${{ secrets.MA_PAIRE_PEM }}" > ma-paire.pem
 
       - name: Set permissions for private key
-        run: chmod 600 C:\Users\Rawan\Desktop\Projet-Glop-backend\ma-paire.pem
+        run: chmod 600 ma-paire.pem
 
       - name: Stop and Remove Existing Container
         run: |
