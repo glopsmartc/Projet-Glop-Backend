@@ -21,7 +21,7 @@ jobs:
 
       # Compile the backend project
       - name: Compile Backend Project
-        working-directory: ./backend/projetglop-backend
+        working-directory: .
         run: |
           mvn clean compile
           echo "Compilation successful"
@@ -41,15 +41,9 @@ jobs:
           java-version: '21'
 
       # Install backend dependencies and run JUnit tests
-      #- name: Run Backend JUnit Tests
-      #  working-directory: ./backend/projetglop-backend
-      #  run: |
-      #    mvn install
-      #    mvn test
-
-      - name: Test Backend Setup # for testing the cicd
-        working-directory: ./backend/projetglop-backend
+      - name: Run Backend JUnit Tests
+        working-directory: .
         run: |
-          echo "Testing Backend: Verifying Maven installation"
-          mvn -version
-          echo "Backend setup test succeeded"
+           mvn install
+           mvn test
+
