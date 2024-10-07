@@ -21,6 +21,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '21'
+          distribution: 'temurin'
 
       # Compile the backend project
       - name: Compile Backend Project
@@ -42,6 +43,7 @@ jobs:
         uses: actions/setup-java@v3
         with:
           java-version: '21'
+          distribution: 'temurin'
 
       # Run JUnit tests for backend
       - name: Run Backend JUnit Tests
