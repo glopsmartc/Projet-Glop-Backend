@@ -2,9 +2,13 @@ name: CI/CD Pipeline Microservice Gestion des utilisateurs
 
 on:
   push:
+    branches:
+      - feature/*
     paths:
       - './GestionDesUtilisateursService/**'
   pull_request:
+    branches:
+      - develop
     paths:
       - './GestionDesUtilisateursService/**'
 
