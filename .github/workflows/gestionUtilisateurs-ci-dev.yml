@@ -3,10 +3,10 @@ name: CI/CD Pipeline Microservice Gestion des utilisateurs
 on:
   push:
     paths:
-      - 'Projet-Glop-backend/GestionDesUtilisateursService/**'
+      - './GestionDesUtilisateursService/**'
   pull_request:
     paths:
-      - 'Projet-Glop-backend/GestionDesUtilisateursService/**'
+      - './GestionDesUtilisateursService/**'
 
 jobs:
   compile:
