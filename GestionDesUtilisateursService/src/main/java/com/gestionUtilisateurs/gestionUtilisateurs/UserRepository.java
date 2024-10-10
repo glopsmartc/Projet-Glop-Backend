@@ -1,4 +1,4 @@
-package com.projetglop_backend.projetglop_backend;
+package com.gestionUtilisateurs.gestionUtilisateurs;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

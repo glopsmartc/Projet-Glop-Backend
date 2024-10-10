@@ -8,11 +8,11 @@
 		<version>3.3.4</version>
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
-	<groupId>com.projetglop-backend</groupId>
+	<groupId>com.</groupId>
 	<artifactId>projetglop-backend</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>projetglop-backend</name>
-	<description>Demo project for Spring Boot</description>
+	<name>gestionUtilisateurs</name>
+	<description>gestionUtilisateurs</description>
 	<url/>
 	<licenses>
 		<license/>
@@ -37,6 +37,11 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<scope>test</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.h2database</groupId>
