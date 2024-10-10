@@ -5,12 +5,12 @@ on:
     branches:
       - feature/*
     paths:
-      - './GestionDesUtilisateursService/**'
+      - 'GestionDesUtilisateursService/**'
   pull_request:
     branches:
       - develop
     paths:
-      - './GestionDesUtilisateursService/**'
+      - 'GestionDesUtilisateursService/**'
 
 jobs:
   compile:
