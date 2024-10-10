@@ -1,5 +1,4 @@
-package com.projetglop_backend.projetglop_backend;
-
+package com.gestionUtilisateurs.gestionUtilisateurs;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,5 +1,4 @@
-package com.projetglop_backend.projetglop_backend;
-
+package com.gestionUtilisateurs.gestionUtilisateurs;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -13,6 +12,11 @@ public class Utilisateur {
     private Long id;
     private String name;
     private String email;
+
+    public Utilisateur(String name, String email) {
+        this.name = name;
+        this.email = email;
+    }
 
     // Getters et Setters
     public Long getId() { return id; }
