@@ -27,7 +27,7 @@ public class UserControllerTest {
 
     @Test
     public void testGetAllUsers() {
-        // Arrange
+
         List<Utilisateur> mockUsers = new ArrayList<>();
         mockUsers.add(new Utilisateur("John", "Doe@gmail.com"));
         mockUsers.add(new Utilisateur( "Jane", "DoeJane@gmail.com"));
