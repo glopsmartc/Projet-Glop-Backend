@@ -37,7 +37,7 @@ public class UserControllerTest {
         // Act
         List<Utilisateur> users = userController.getAllUsers();
 
-        // Assert
+
         assertEquals(2, users.size());
         assertEquals("John", users.get(0).getName());
         assertEquals("Jane", users.get(1).getName());
