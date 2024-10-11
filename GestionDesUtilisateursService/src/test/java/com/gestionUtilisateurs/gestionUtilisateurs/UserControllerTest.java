@@ -34,7 +34,6 @@ public class UserControllerTest {
 
         when(userService.getAllUsers()).thenReturn(mockUsers);
 
-        // Act
         List<Utilisateur> users = userController.getAllUsers();
 
 
