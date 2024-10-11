@@ -1,5 +1,4 @@
-package com.projetglop_backend.projetglop_backend;
-
+package com.gestionUtilisateurs.gestionUtilisateurs;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

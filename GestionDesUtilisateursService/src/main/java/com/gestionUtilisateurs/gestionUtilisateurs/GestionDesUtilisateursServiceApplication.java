@@ -1,13 +1,13 @@
-package com.projetglop_backend.projetglop_backend;
+package com.gestionUtilisateurs.gestionUtilisateurs;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ProjetglopBackendApplication {
+public class GestionDesUtilisateursServiceApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(ProjetglopBackendApplication.class, args);
+		SpringApplication.run(GestionDesUtilisateursServiceApplication.class, args);
 	}
 
 }

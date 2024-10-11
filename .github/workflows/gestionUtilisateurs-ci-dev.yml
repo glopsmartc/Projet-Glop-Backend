@@ -1,12 +1,12 @@
-name: CI/CD Pipeline Dev
+name: CI/CD Pipeline Microservice Gestion des utilisateurs
 
 on:
-  pull_request:
-    branches:
-      - develop
   push:
-    branches:
-      - feature/*
+    paths:
+      - 'Projet-Glop-backend/GestionDesUtilisateursService/**'
+  pull_request:
+    paths:
+      - 'Projet-Glop-backend/GestionDesUtilisateursService/**'
 
 jobs:
   compile:
@@ -23,9 +23,9 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
-      # Compile the backend project
-      - name: Compile Backend Project
-        working-directory: .
+      # Compile the microservice
+      - name: Compile Microservice Gestion des utilisateurs
+        working-directory: ./GestionDesUtilisateursService
         run: |
           mvn clean compile
           echo "Compilation successful"
@@ -47,7 +47,7 @@ jobs:
 
       # Run JUnit tests for backend
       - name: Run Backend JUnit Tests
-        working-directory: .
+        working-directory: ./GestionDesUtilisateursService
         run: |
           mvn install
           mvn test
