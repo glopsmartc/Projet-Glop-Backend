@@ -5,8 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="97f4dc35-e3dd-442c-af9a-49476119033b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.github/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GestionDesUtilisateursService/src/main/java/com/gestionUtilisateurs/gestionUtilisateurs/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/GestionDesUtilisateursService/src/main/java/com/gestionUtilisateurs/gestionUtilisateurs/UserController.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -35,14 +34,21 @@
     "git-widget-placeholder": "feature/test",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/Rawan/Desktop/Projet-Glop-backend/.github",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RunManager">
+    <configuration name="GestionDesUtilisateursServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="projetglop-backend" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.gestionUtilisateurs.gestionUtilisateurs.GestionDesUtilisateursServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -59,7 +65,6 @@
       <option name="presentableId" value="Default" />
       <updated>1728628674662</updated>
       <workItem from="1728628677285" duration="99000" />
-      <workItem from="1728676227563" duration="1508000" />
     </task>
     <servers />
   </component>
