@@ -104,7 +104,7 @@ jobs:
           context: ./GestionDesUtilisateursService
           file: ./GestionDesUtilisateursService/Dockerfile
           push: true
-          tags: ${{ secrets.DOCKER_USERNAME }}/backend-gestionUtilisateurs:${{ github.sha }}
+          tags: ${{ secrets.DOCKER_USERNAME }}/backend-gestion-utilisateurs:${{ github.sha }}
 
   deploy-GestionUtilisateursService:
     if: contains(github.event.head_commit.message, 'GestionDesUtilisateursService/') || contains(github.event.head_commit.files, 'GestionDesUtilisateursService/')
@@ -139,8 +139,8 @@ jobs:
 
       - name: Pull Backend Docker Image GestionUtilisateursService
         run: |
-          ssh -i ma-paire.pem -o StrictHostKeyChecking=no ubuntu@$IP_ADDRESS_BACK 'sudo docker pull ${{ secrets.DOCKER_USERNAME }}/backend-gestionUtilisateurs:${{ github.sha }}'
+          ssh -i ma-paire.pem -o StrictHostKeyChecking=no ubuntu@$IP_ADDRESS_BACK 'sudo docker pull ${{ secrets.DOCKER_USERNAME }}/backend-gestion-utilisateurs:${{ github.sha }}'
 
       - name: Run New Backend Container GestionUtilisateursService
         run: |
-          ssh -i ma-paire.pem -o StrictHostKeyChecking=no ubuntu@$IP_ADDRESS_BACK 'sudo docker run -d --name backend-gestionUtilisateurs -p 80:8080 ${{ secrets.DOCKER_USERNAME }}/backend-gestionUtilisateurs:${{ github.sha }}'
+          ssh -i ma-paire.pem -o StrictHostKeyChecking=no ubuntu@$IP_ADDRESS_BACK 'sudo docker run -d --name backend-gestion-utilisateurs -p 80:8080 ${{ secrets.DOCKER_USERNAME }}/backend-gestion-utilisateurs:${{ github.sha }}'
