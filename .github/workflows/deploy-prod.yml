@@ -32,6 +32,7 @@ jobs:
           echo "Compilation successful"
 
   sonarcloud-analysis-GestionUtilisateursService:
+    if: contains(github.event.head_commit.message, 'GestionDesUtilisateursService/') || contains(github.event.head_commit.files, 'GestionDesUtilisateursService/')
     runs-on: ubuntu-latest
     needs: compile-GestionUtilisateursService
 
