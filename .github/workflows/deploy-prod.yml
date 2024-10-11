@@ -10,7 +10,7 @@ env:
 
 jobs:
   compile-GestionUtilisateursService:
-    if: contains(github.event.head_commit.message, 'GestionDesUtilisateursService/') || contains(github.event.head_commit.files, 'GestionDesUtilisateursService/')
+    #if: contains(github.event.head_commit.message, 'GestionDesUtilisateursService/') || contains(github.event.head_commit.files, 'GestionDesUtilisateursService/')
     runs-on: ubuntu-latest
 
     steps:
