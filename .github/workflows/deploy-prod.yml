@@ -65,13 +65,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_SECRET }}
-<<<<<<< HEAD
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.organization=glopsmartc -Dsonar.projectKey=glopsmartc_Projet-Glop-Backend -Dsonar.projectBaseDir=./GestionDesUtilisateursService
-  
-=======
         run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.organization=glopsmartc -Dsonar.projectKey=glopsmartc_Projet-Glop-Backend -Dsonar.projectBaseDir=./GestionDesUtilisateursService  -Dsonar.sources=./src/main
 
->>>>>>> develop
   build-GestionUtilisateursService:
     if: contains(github.event.head_commit.message, 'GestionDesUtilisateursService/') || contains(github.event.head_commit.files, 'GestionDesUtilisateursService/')
     runs-on: ubuntu-latest
