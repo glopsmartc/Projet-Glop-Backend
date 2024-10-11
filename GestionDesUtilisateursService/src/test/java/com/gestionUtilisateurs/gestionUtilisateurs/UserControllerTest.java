@@ -29,14 +29,14 @@ public class UserControllerTest {
     public void testGetAllUsers() {
 
         List<Utilisateur> mockUsers = new ArrayList<>();
-        mockUsers.add(new Utilisateur("John", "Doe@gmail.com"));
+        mockUsers.add(new Utilisateur("John", "DoeJohn@gmail.com"));
         mockUsers.add(new Utilisateur( "Jane", "DoeJane@gmail.com"));
 
         when(userService.getAllUsers()).thenReturn(mockUsers);
 
         List<Utilisateur> users = userController.getAllUsers();
 
-        //Assert
+        //Asser
         assertEquals(2, users.size());
         assertEquals("John", users.get(0).getName());
         assertEquals("Jane", users.get(1).getName());
