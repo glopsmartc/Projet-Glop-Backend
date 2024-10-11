@@ -29,7 +29,7 @@ public class UserControllerTest {
     public void testGetAllUsers() {
 
         List<Utilisateur> mockUsers = new ArrayList<>();
-        mockUsers.add(new Utilisateur("John", "DoeJohn@gmail.com"));
+        mockUsers.add(new Utilisateur("John", "Doe@gmail.com"));
         mockUsers.add(new Utilisateur( "Jane", "DoeJane@gmail.com"));
 
         when(userService.getAllUsers()).thenReturn(mockUsers);
