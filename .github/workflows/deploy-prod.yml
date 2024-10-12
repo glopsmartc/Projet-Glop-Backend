@@ -136,7 +136,7 @@ jobs:
 
       - name: Stop and Remove Existing Container GestionUtilisateursService
         run: |
-         ssh -i ma-paire.pem -o StrictHostKeyChecking=no ubuntu@$IP_ADDRESS_BACK 'sudo docker stop backend-gestionUtilisateurs || true && sudo docker rm backend-gestionUtilisateurs || true'
+         ssh -i ma-paire.pem -o StrictHostKeyChecking=no ubuntu@$IP_ADDRESS_BACK 'sudo docker stop backend-gestion-utilisateurs || true && sudo docker rm backend-gestion-utilisateurs || true'
 
       - name: Pull Backend Docker Image GestionUtilisateursService
         run: |
