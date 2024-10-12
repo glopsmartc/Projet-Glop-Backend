@@ -9,8 +9,12 @@ import java.util.List;
 @CrossOrigin(origins = "http://localhost:4200", methods = {RequestMethod.GET, RequestMethod.POST})
 public class UserController {
 
-    @Autowired
     private UserService userService;
+
+    public UserController(UserService userService) {
+        this.userService = userService;
+    }
+
     //pour recuperer la liste des etudiants
     @GetMapping("/users")
     public List<Utilisateur> getAllUsers() {
