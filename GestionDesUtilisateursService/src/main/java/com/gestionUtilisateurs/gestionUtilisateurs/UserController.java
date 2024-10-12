@@ -15,7 +15,7 @@ public class UserController {
         this.userService = userService;
     }
 
-    //recuperer la liste des etudiants
+    //pour recuperer la liste des etudiants
     @GetMapping("/users")
     public List<Utilisateur> getAllUsers() {
         return userService.getAllUsers();
