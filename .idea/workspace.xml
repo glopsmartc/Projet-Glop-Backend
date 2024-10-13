@@ -5,7 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="97f4dc35-e3dd-442c-af9a-49476119033b" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/GestionDesUtilisateursService/src/main/resources/application-prod.properties" beforeDir="false" afterPath="$PROJECT_DIR$/GestionDesUtilisateursService/src/main/resources/application-prod.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,6 +19,13 @@
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
+  </component>
+  <component name="MavenImportPreferences">
+    <option name="generalSettings">
+      <MavenGeneralSettings>
+        <option name="mavenHome" value="Use Maven wrapper" />
+      </MavenGeneralSettings>
+    </option>
   </component>
   <component name="ProjectColorInfo">{
   &quot;customColor&quot;: &quot;&quot;,
@@ -39,11 +48,19 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Spring Boot.GestionDesUtilisateursServiceApplication">
     <configuration name="GestionDesUtilisateursServiceApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
       <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
       <module name="projetglop-backend" />
       <option name="SPRING_BOOT_MAIN_CLASS" value="com.gestionUtilisateurs.gestionUtilisateurs.GestionDesUtilisateursServiceApplication" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="GestioncontratsApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot" nameIsGenerated="true">
+      <option name="FRAME_DEACTIVATION_UPDATE_POLICY" value="UpdateClassesAndResources" />
+      <module name="gestioncontrats" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.gestioncontrats.gestioncontrats.GestioncontratsApplication" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -65,6 +82,7 @@
       <option name="presentableId" value="Default" />
       <updated>1728628674662</updated>
       <workItem from="1728628677285" duration="99000" />
+      <workItem from="1728842901837" duration="320000" />
     </task>
     <servers />
   </component>
