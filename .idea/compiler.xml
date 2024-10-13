@@ -9,9 +9,13 @@
         <module name="projetglop-backend" />
       </profile>
     </annotationProcessing>
+    <bytecodeTargetLevel>
+      <module name="gestioncontrats" target="21" />
+    </bytecodeTargetLevel>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="gestioncontrats" options="-parameters" />
       <module name="projetglop-backend" options="-parameters" />
     </option>
   </component>
