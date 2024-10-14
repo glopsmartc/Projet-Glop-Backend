@@ -15,7 +15,6 @@ import java.time.LocalDate;
 
 @RequestMapping("/auth")
 @RestController
-@CrossOrigin(origins = "http://localhost:4200", methods = {RequestMethod.GET, RequestMethod.POST})
 public class AuthenticationController {
     private final JwtService jwtService;
 
