@@ -6,8 +6,11 @@
   <component name="ChangeListManager">
     <list default="true" id="97f4dc35-e3dd-442c-af9a-49476119033b" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GestionDesUtilisateursService/src/main/resources/application-dev.properties" beforeDir="false" afterPath="$PROJECT_DIR$/GestionDesUtilisateursService/src/main/resources/application-dev.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/GestionDesUtilisateursService/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/GestionDesUtilisateursService/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -17,6 +20,9 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
+  <component name="KubernetesApiProvider"><![CDATA[{
+  "isMigrated": true
+}]]></component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
   </component>
@@ -38,14 +44,26 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "feature/test",
+    "Spring Boot.GestionDesUtilisateursServiceApplication.executor": "Run",
+    "git-widget-placeholder": "feature/auth-client-signup-signin",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Rawan/Desktop/Projet-Glop-backend/.github",
+    "last_opened_file_path": "C:/Users/Rawan/Desktop/Projet-Glop-backend/GestionDesContratsService",
+    "node.js.detected.package.eslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "vue.rearranger.settings.migration": "true"
+  },
+  "keyToStringList": {
+    "DatabaseDriversLRU": [
+      "postgresql"
+    ]
   }
 }]]></component>
   <component name="RunManager" selected="Spring Boot.GestionDesUtilisateursServiceApplication">
@@ -83,6 +101,7 @@
       <updated>1728628674662</updated>
       <workItem from="1728628677285" duration="99000" />
       <workItem from="1728842901837" duration="320000" />
+      <workItem from="1728843293293" duration="8150000" />
     </task>
     <servers />
   </component>
