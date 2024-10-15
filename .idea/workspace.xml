@@ -5,20 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="c02f75de-41f0-4b3f-8bb1-160b9ec423f5" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/GestionDesUtilisateursService/src/main/java/com/gestionUtilisateurs/gestionUtilisateurs/model/Client.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GestionDesUtilisateursService/src/main/java/com/gestionUtilisateurs/gestionUtilisateurs/model/ClientRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GestionDesUtilisateursService/src/main/java/com/gestionUtilisateurs/gestionUtilisateurs/model/Utilisateur.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/GestionDesUtilisateursService/src/main/java/com/gestionUtilisateurs/gestionUtilisateurs/model/UtilisateurRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GestionDesUtilisateursService/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/GestionDesUtilisateursService/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GestionDesUtilisateursService/src/main/java/com/gestionUtilisateurs/gestionUtilisateurs/GestionDesUtilisateursServiceApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/GestionDesUtilisateursService/src/main/java/com/gestionUtilisateurs/gestionUtilisateurs/GestionDesUtilisateursServiceApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GestionDesUtilisateursService/src/main/resources/application-dev.properties" beforeDir="false" afterPath="$PROJECT_DIR$/GestionDesUtilisateursService/src/main/resources/application-dev.properties" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/GestionDesUtilisateursService/src/main/resources/application-prod.properties" beforeDir="false" afterPath="$PROJECT_DIR$/GestionDesUtilisateursService/src/main/resources/application-prod.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GestionDesUtilisateursService/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/GestionDesUtilisateursService/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/GestionDesUtilisateursService/src/main/resources/db/init_db.sql" beforeDir="false" afterPath="$PROJECT_DIR$/GestionDesUtilisateursService/src/main/resources/db/init_db_dev.sql" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -69,7 +58,7 @@
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "Spring Boot.GestionDesUtilisateursServiceApplication.executor": "Run",
     "Spring Boot.GestioncontratsApplication.executor": "Run",
-    "git-widget-placeholder": "Merging feature/auth-client-signup-signin",
+    "git-widget-placeholder": "feature/auth-client-signup-signin",
     "kotlin-language-version-configured": "true",
     "node.js.detected.package.eslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -143,7 +132,7 @@
       <workItem from="1728628677285" duration="99000" />
       <workItem from="1728842901837" duration="320000" />
       <workItem from="1728843293293" duration="8150000" />
-      <workItem from="1728929850184" duration="18519000" />
+      <workItem from="1728929850184" duration="21780000" />
     </task>
     <servers />
   </component>
