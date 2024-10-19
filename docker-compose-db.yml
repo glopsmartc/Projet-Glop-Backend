@@ -3,9 +3,9 @@ services:
   postgres-db-prod:
     image: postgres
     environment:
-      - POSTGRES_PASSWORD=glop2425
-      - POSTGRES_USER=prod_user
-      - POSTGRES_DB=prod_db
+      - POSTGRES_PASSWORD= glop2425
+      - POSTGRES_USER= prod_user
+      - POSTGRES_DB= prod_db
     ports:
       - "5433:5432"  # PostgreSQL sera accessible via l'IP publique de la VMDB
     healthcheck:

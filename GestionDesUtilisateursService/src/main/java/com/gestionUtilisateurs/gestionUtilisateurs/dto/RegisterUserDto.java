@@ -25,6 +25,8 @@ public class RegisterUserDto {
 
     private String adresse;
 
+    private String dateNaissanceString; // Chaîne pour la date de naissance
+
     private LocalDate dateNaissance;
 
 
