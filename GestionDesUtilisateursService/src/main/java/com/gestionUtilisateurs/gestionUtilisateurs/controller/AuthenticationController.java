@@ -1,17 +1,16 @@
 package com.gestionUtilisateurs.gestionUtilisateurs.controller;
 
-import com.gestionUtilisateurs.gestionUtilisateurs.dto.LoginResponse;
-import com.gestionUtilisateurs.gestionUtilisateurs.dto.LoginUserDto;
-import com.gestionUtilisateurs.gestionUtilisateurs.dto.RegisterUserDto;
-import com.gestionUtilisateurs.gestionUtilisateurs.exception.AddFailedException;
+import com.gestionUtilisateurs.gestionUtilisateurs.dto.*;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.Utilisateur;
 import com.gestionUtilisateurs.gestionUtilisateurs.service.AuthServiceItf;
 import com.gestionUtilisateurs.gestionUtilisateurs.service.JwtService;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 
 @RequestMapping("/auth")
 @RestController
@@ -20,6 +19,8 @@ public class AuthenticationController {
 
     private final AuthServiceItf authenticationService;
 
+    private static final DateTimeFormatter DATE_FORMATTER = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
     public AuthenticationController(JwtService jwtService, AuthServiceItf authenticationService) {
         this.jwtService = jwtService;
         this.authenticationService = authenticationService;
@@ -27,8 +28,9 @@ public class AuthenticationController {
 
         @PostMapping("/signup")
         public ResponseEntity<Utilisateur> register(@RequestBody RegisterUserDto registerUserDto) {
+            registerUserDto.setDateNaissance(convertToLocalDate(registerUserDto.getDateNaissanceString()));
             Utilisateur registeredUser = authenticationService.signup(registerUserDto);
-            System.out.println("hi"+registeredUser);
+
             return ResponseEntity.ok(registeredUser);
         }
 
@@ -44,4 +46,33 @@ public class AuthenticationController {
 
             return ResponseEntity.ok(loginResponse);
         }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<String> forgotPassword(@RequestBody PasswordResetRequest request) {
+        try {
+            authenticationService.initiatePasswordReset(request.getEmail());
+            return ResponseEntity.ok("Email de réinitialisation envoyé.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Erreur : " + e.getMessage());
+        }
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request) {
+        try {
+            authenticationService.resetPassword(request.getToken(), request.getNewPassword());
+            return ResponseEntity.ok("Mot de passe réinitialisé avec succès.");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Erreur : " + e.getMessage());
+        }
+
+    }
+
+    private LocalDate convertToLocalDate(String dateString) {
+        try {
+            return LocalDate.parse(dateString, DATE_FORMATTER);
+        } catch (DateTimeParseException e) {
+            throw new IllegalArgumentException("Date format is invalid, please use DD/MM/YYYY format.");
+        }
+    }
 }
