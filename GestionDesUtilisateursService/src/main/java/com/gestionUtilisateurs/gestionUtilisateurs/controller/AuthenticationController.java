@@ -28,7 +28,6 @@ public class AuthenticationController {
 
         @PostMapping("/signup")
         public ResponseEntity<Utilisateur> register(@RequestBody RegisterUserDto registerUserDto) {
-            registerUserDto.setDateNaissance(convertToLocalDate(registerUserDto.getDateNaissanceString()));
             Utilisateur registeredUser = authenticationService.signup(registerUserDto);
 
             return ResponseEntity.ok(registeredUser);
@@ -68,11 +67,4 @@ public class AuthenticationController {
 
     }
 
-    private LocalDate convertToLocalDate(String dateString) {
-        try {
-            return LocalDate.parse(dateString, DATE_FORMATTER);
-        } catch (DateTimeParseException e) {
-            throw new IllegalArgumentException("Date format is invalid, please use DD/MM/YYYY format.");
-        }
-    }
 }
