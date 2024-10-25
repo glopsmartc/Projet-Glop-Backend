@@ -63,4 +63,27 @@ class UserServiceImpTest {
         verify(userRepository, times(1)).save(any(Utilisateur.class));
     }
 
+
+    @Test
+    void testCreateConseillerRoleNotFound() {
+        RegisterUserDto registerDto = new RegisterUserDto();
+        registerDto.setNom("John");
+        registerDto.setPrenom("Doe");
+
+        when(roleRepository.findByName(RoleEnum.CONSEILLER)).thenReturn(Optional.empty());
+
+        Utilisateur result = userService.createConseiller(registerDto);
+
+        assertNull(result);
+    }
+
+    @Test
+    void testAllUsers() {
+        when(userRepository.findAll()).thenReturn(List.of(new Utilisateur(), new Utilisateur()));
+
+        var users = userService.allUsers();
+
+        assertEquals(2, users.size());
+        verify(userRepository, times(1)).findAll();
+    }
 }
