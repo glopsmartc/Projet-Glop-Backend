@@ -48,4 +48,20 @@ class LogisticienEntityTest {
         assertEquals("Anna", savedLogisticien.getPrenom());
         assertEquals(role, savedLogisticien.getRole());
     }
+
+    @Test
+    void testInvalidLogisticienThrowsException() {
+        Logisticien logisticien = new Logisticien();
+        logisticien.setNom("");
+        logisticien.setPrenom("Anna");
+        logisticien.setEmail("anna.smith@example.com");
+        logisticien.setAdresse("5678 Logistics Ave");
+        logisticien.setNumTel("+1234567890");
+        logisticien.setMotDePasse("password");
+        logisticien.setDateNaissance(LocalDate.of(1988, 3, 3));
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            utilisateurRepository.save(logisticien);
+        });
+    }
 }
