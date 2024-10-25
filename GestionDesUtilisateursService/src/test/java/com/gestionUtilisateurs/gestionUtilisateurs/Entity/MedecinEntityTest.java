@@ -55,6 +55,7 @@ class MedecinEntityTest {
         assertArrayEquals(new String[]{"Mon 9-11", "Tue 10-12"}, savedMedecin.getDisponibilites());
         assertTrue(savedMedecin.isDeplacement());
     }
+
     @Test
     void testInvalidMedecinThrowsException() {
         Medecin medecin = new Medecin();
@@ -70,6 +71,5 @@ class MedecinEntityTest {
             utilisateurRepository.save(medecin);
         });
     }
-
 }
 
