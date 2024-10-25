@@ -50,5 +50,11 @@ public class ClientEntityTest {
         assertEquals(savedUtilisateur.getNom(), foundUtilisateur.getNom());
     }
 
+    @Test
+    public void testDeleteClient() {
+        Utilisateur savedUtilisateur = utilisateurRepository.save(utilisateur);
+        utilisateurRepository.delete(savedUtilisateur);
 
+        assertEquals(utilisateurRepository.findById(savedUtilisateur.getIdUser()).isPresent(), false);
+    }
 }
