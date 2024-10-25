@@ -41,4 +41,14 @@ public class ClientEntityTest {
         assertEquals(utilisateur.getEmail(), savedUtilisateur.getEmail());
     }
 
+    @Test
+    public void testFindClientById() {
+        Utilisateur savedUtilisateur = utilisateurRepository.save(utilisateur);
+        Utilisateur foundUtilisateur = utilisateurRepository.findById(savedUtilisateur.getIdUser()).orElse(null);
+
+        assertNotNull(foundUtilisateur);
+        assertEquals(savedUtilisateur.getNom(), foundUtilisateur.getNom());
+    }
+
+
 }
