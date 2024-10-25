@@ -49,4 +49,19 @@ class ConseillerEntityTest {
         assertEquals(role, savedConseiller.getRole());
     }
 
+    @Test
+    void testInvalidConseillerThrowsException() {
+        Conseiller conseiller = new Conseiller();
+        conseiller.setNom("");
+        conseiller.setPrenom("Jane");
+        conseiller.setEmail("jane.doe@example.com");
+        conseiller.setAdresse("4321 Another St");
+        conseiller.setNumTel("+0987654321");
+        conseiller.setMotDePasse("password");
+        conseiller.setDateNaissance(LocalDate.of(1992, 2, 2));
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            utilisateurRepository.save(conseiller);
+        });
+    }
 }
