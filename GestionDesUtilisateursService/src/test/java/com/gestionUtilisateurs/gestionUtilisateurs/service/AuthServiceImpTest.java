@@ -88,4 +88,23 @@ class AuthServiceImpTest {
 
         assertNull(result);
     }
+
+    @Test
+    void testAuthenticateSuccess() {
+        LoginUserDto loginDto = new LoginUserDto("user@example.com", "password123");
+        loginDto.setEmail("johndoe@example.com");
+        loginDto.setPassword("password");
+
+        Utilisateur user = new Utilisateur();
+        user.setEmail("johndoe@example.com");
+
+        when(userRepository.findByEmail(loginDto.getEmail())).thenReturn(Optional.of(user));
+
+        Utilisateur result = authService.authenticate(loginDto);
+
+        assertNotNull(result);
+        assertEquals(user.getEmail(), result.getEmail());
+        verify(authenticationManager, times(1)).authenticate(any());
+    }
+
 }
