@@ -73,7 +73,6 @@ class AuthenticationControllerTest {
         assertEquals("Email de réinitialisation envoyé.", response.getBody());
     }
 
-
     @Test
     void testResetPassword() {
         ResetPasswordRequest request = new ResetPasswordRequest();
@@ -84,4 +83,5 @@ class AuthenticationControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals("Mot de passe réinitialisé avec succès.", response.getBody());
     }
+
 }

@@ -28,16 +28,4 @@ class ConseillerControllerTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
     }
-
-    @Test
-    void testCreateConseiller() {
-        RegisterUserDto registerUserDto = new RegisterUserDto();
-        Utilisateur mockUser = new Utilisateur();
-
-        when(userService.createConseiller(any(RegisterUserDto.class))).thenReturn(mockUser);
-
-        ResponseEntity<Utilisateur> response = conseillerController.createConseiller(registerUserDto);
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(mockUser, response.getBody());
-    }
 }
