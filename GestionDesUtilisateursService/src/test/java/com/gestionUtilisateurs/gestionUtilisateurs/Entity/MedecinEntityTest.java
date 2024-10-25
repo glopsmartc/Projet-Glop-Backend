@@ -55,6 +55,21 @@ class MedecinEntityTest {
         assertArrayEquals(new String[]{"Mon 9-11", "Tue 10-12"}, savedMedecin.getDisponibilites());
         assertTrue(savedMedecin.isDeplacement());
     }
+    @Test
+    void testInvalidMedecinThrowsException() {
+        Medecin medecin = new Medecin();
+        medecin.setNom("");
+        medecin.setPrenom("Tom");
+        medecin.setEmail("tom.brown@example.com");
+        medecin.setAdresse("1357 Health St");
+        medecin.setNumTel("+1234567890");
+        medecin.setMotDePasse("password");
+        medecin.setDateNaissance(LocalDate.of(1985, 4, 4));
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            utilisateurRepository.save(medecin);
+        });
+    }
 
 }
 
