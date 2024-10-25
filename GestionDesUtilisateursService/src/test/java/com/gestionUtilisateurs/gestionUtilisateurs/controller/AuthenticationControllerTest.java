@@ -63,4 +63,15 @@ class AuthenticationControllerTest {
         assertEquals(mockToken, response.getBody().getToken());
     }
 
+    @Test
+    void testForgotPassword() {
+        PasswordResetRequest request = new PasswordResetRequest();
+        request.setEmail("test@example.com");
+
+        ResponseEntity<String> response = authenticationController.forgotPassword(request);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Email de réinitialisation envoyé.", response.getBody());
+    }
+
+
 }
