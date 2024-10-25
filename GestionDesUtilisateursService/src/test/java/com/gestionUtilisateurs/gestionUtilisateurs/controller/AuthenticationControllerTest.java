@@ -74,4 +74,14 @@ class AuthenticationControllerTest {
     }
 
 
+    @Test
+    void testResetPassword() {
+        ResetPasswordRequest request = new ResetPasswordRequest();
+        request.setToken("mockToken");
+        request.setNewPassword("newPassword");
+
+        ResponseEntity<String> response = authenticationController.resetPassword(request);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Mot de passe réinitialisé avec succès.", response.getBody());
+    }
 }
