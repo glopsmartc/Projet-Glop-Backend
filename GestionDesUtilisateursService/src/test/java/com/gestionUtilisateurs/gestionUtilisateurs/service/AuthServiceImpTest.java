@@ -106,6 +106,7 @@ class AuthServiceImpTest {
         assertEquals(user.getEmail(), result.getEmail());
         verify(authenticationManager, times(1)).authenticate(any());
     }
+
     @Test
     void testInitiatePasswordResetSuccess() {
         String email = "test@example.com";
@@ -119,5 +120,4 @@ class AuthServiceImpTest {
         verify(userRepository, times(1)).save(user);
         verify(emailService, times(1)).sendPasswordResetEmail(eq(email), anyString());
     }
-
 }
