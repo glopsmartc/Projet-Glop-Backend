@@ -50,5 +50,13 @@ class UtilisateurControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(mockUser, response.getBody());
     }
+    @Test
+    void testAllUsers() {
+        List<Utilisateur> mockUsers = new ArrayList<>();
+        when(userService.allUsers()).thenReturn(mockUsers);
 
+        ResponseEntity<List<Utilisateur>> response = utilisateurController.allUsers();
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(mockUsers, response.getBody());
+    }
 }
