@@ -73,4 +73,19 @@ class AuthServiceImpTest {
         assertEquals("john.doe@example.com", result.getEmail(), "L'email de l'utilisateur ne correspond pas");
         assertEquals(clientRole, result.getRole(), "Le rôle de l'utilisateur ne correspond pas");
     }
+
+
+
+    @Test
+    void testSignupRoleNotFound() {
+        RegisterUserDto registerDto = new RegisterUserDto();
+        registerDto.setNom("John");
+        registerDto.setPrenom("Doe");
+
+        when(roleRepository.findByName(RoleEnum.CLIENT)).thenReturn(Optional.empty());
+
+        Utilisateur result = authService.signup(registerDto);
+
+        assertNull(result);
+    }
 }
