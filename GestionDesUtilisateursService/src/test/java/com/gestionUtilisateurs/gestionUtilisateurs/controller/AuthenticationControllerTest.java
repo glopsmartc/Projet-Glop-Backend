@@ -49,5 +49,18 @@ class AuthenticationControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(mockUser, response.getBody());
     }
+    @Test
+    void testAuthenticate() {
+        LoginUserDto loginUserDto = new LoginUserDto("testUser", "password123");
+        Utilisateur mockUser = new Utilisateur();
+        String mockToken = "mockToken";
+
+        when(authenticationService.authenticate(any(LoginUserDto.class))).thenReturn(mockUser);
+        when(jwtService.generateToken(mockUser)).thenReturn(mockToken);
+
+        ResponseEntity<LoginResponse> response = authenticationController.authenticate(loginUserDto);
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(mockToken, response.getBody().getToken());
+    }
 
 }
