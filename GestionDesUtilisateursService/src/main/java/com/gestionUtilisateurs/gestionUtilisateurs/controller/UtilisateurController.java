@@ -19,7 +19,7 @@ public class UtilisateurController {
         this.userService = userService;
     }
 
-    @GetMapping("/me")
+    @GetMapping("/current-user")
     @PreAuthorize("isAuthenticated()")
     public ResponseEntity<Utilisateur> authenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
