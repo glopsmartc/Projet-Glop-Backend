@@ -20,8 +20,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-//@ActiveProfiles("test")
-//@Sql(scripts = "/insert_roles.sql")
+@ActiveProfiles("test")
+@Sql(scripts = "/insert_roles.sql")
 class LogisticienEntityTest {
 
     @Autowired
