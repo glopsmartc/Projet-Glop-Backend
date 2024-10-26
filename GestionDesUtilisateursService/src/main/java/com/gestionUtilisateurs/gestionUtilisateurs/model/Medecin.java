@@ -17,8 +17,10 @@ public class Medecin extends Utilisateur{
     @Column(name = "specialite")
     private String specialite;
 
-    @Column(name = "disponibilites", columnDefinition = "text[]") // tableau de texte
-    private String[] disponibilites; // Tableau pour stocker les horaires de disponibilité
+    @ElementCollection
+    @CollectionTable(name = "medecin_disponibilites", schema = "gestion_utilisateurs", joinColumns = @JoinColumn(name = "medecin_id"))
+    @Column(name = "disponibilite")
+    private List<String> disponibilites;
 
     @Column(name = "deplacement")
     private boolean deplacement;

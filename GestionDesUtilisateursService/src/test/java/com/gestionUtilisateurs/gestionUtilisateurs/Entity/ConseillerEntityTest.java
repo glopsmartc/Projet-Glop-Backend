@@ -1,6 +1,7 @@
 package com.gestionUtilisateurs.gestionUtilisateurs.Entity;
 
 import com.gestionUtilisateurs.gestionUtilisateurs.model.Conseiller;
+import com.gestionUtilisateurs.gestionUtilisateurs.model.ConseillerRepository;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.UtilisateurRepository;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.Role;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.RoleEnum;
@@ -9,26 +10,28 @@ import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
+@ActiveProfiles("test")
+@Sql(scripts = "/insert_roles.sql")
 class ConseillerEntityTest {
 
     @Autowired
-    private UtilisateurRepository utilisateurRepository;
+    private ConseillerRepository utilisateurRepository;
 
     @Autowired
     private RoleRepository roleRepository;
 
     @Test
     void testSaveValidConseiller() {
-        Role role = new Role();
-        role.setName(RoleEnum.CONSEILLER);
-        role.setDescription("Role conseiller");
-        roleRepository.save(role);
+        Optional<Role> optionalRole = roleRepository.findByName(RoleEnum.CONSEILLER);
 
         Conseiller conseiller = new Conseiller();
         conseiller.setNom("Doe");
@@ -38,7 +41,7 @@ class ConseillerEntityTest {
         conseiller.setNumTel("+0987654321");
         conseiller.setMotDePasse("securepassword");
         conseiller.setDateNaissance(LocalDate.of(1992, 2, 2));
-        conseiller.setRole(role);
+        conseiller.setRole(optionalRole.get());
 
         Conseiller savedConseiller = utilisateurRepository.save(conseiller);
 
@@ -46,7 +49,7 @@ class ConseillerEntityTest {
         assertNotNull(savedConseiller.getIdUser());
         assertEquals("Doe", savedConseiller.getNom());
         assertEquals("Jane", savedConseiller.getPrenom());
-        assertEquals(role, savedConseiller.getRole());
+        assertEquals(optionalRole.get(), savedConseiller.getRole());
     }
 
     @Test

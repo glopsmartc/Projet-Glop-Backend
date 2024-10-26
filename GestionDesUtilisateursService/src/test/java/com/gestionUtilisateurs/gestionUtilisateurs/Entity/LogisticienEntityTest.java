@@ -1,6 +1,8 @@
 package com.gestionUtilisateurs.gestionUtilisateurs.Entity;
 
+import com.gestionUtilisateurs.gestionUtilisateurs.model.ConseillerRepository;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.Logisticien;
+import com.gestionUtilisateurs.gestionUtilisateurs.model.LogisticienRepository;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.UtilisateurRepository;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.Role;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.RoleEnum;
@@ -9,26 +11,29 @@ import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.context.ActiveProfiles;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
+//@ActiveProfiles("test")
+//@Sql(scripts = "/insert_roles.sql")
 class LogisticienEntityTest {
 
     @Autowired
-    private UtilisateurRepository utilisateurRepository;
+    private LogisticienRepository utilisateurRepository;
 
     @Autowired
     private RoleRepository roleRepository;
 
+
     @Test
     void testSaveValidLogisticien() {
-        Role role = new Role();
-        role.setName(RoleEnum.LOGISTICIEN);
-        role.setDescription("Role logisticien");
-        roleRepository.save(role);
+        Optional<Role> optionalRole = roleRepository.findByName(RoleEnum.LOGISTICIEN);
 
         Logisticien logisticien = new Logisticien();
         logisticien.setNom("Smith");
@@ -38,7 +43,7 @@ class LogisticienEntityTest {
         logisticien.setNumTel("+1234567890");
         logisticien.setMotDePasse("securepassword");
         logisticien.setDateNaissance(LocalDate.of(1988, 3, 3));
-        logisticien.setRole(role);
+        logisticien.setRole(optionalRole.get());
 
         Logisticien savedLogisticien = utilisateurRepository.save(logisticien);
 
@@ -46,7 +51,7 @@ class LogisticienEntityTest {
         assertNotNull(savedLogisticien.getIdUser());
         assertEquals("Smith", savedLogisticien.getNom());
         assertEquals("Anna", savedLogisticien.getPrenom());
-        assertEquals(role, savedLogisticien.getRole());
+        assertEquals(optionalRole.get(), savedLogisticien.getRole());
     }
 
     @Test
