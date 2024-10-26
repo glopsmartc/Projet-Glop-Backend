@@ -7,9 +7,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.ActiveProfiles;
 
 @SpringBootTest
+@ActiveProfiles("test")
 class GestionDesUtilisateursServiceApplicationTests {
 
-
+	@MockBean
+	private JwtAuthenticationFilter jwtAuthenticationFilter;
 	@Test
 	void contextLoads() {
 	}
