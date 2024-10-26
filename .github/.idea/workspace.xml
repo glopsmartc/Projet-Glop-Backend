@@ -22,6 +22,7 @@
   "keyToString": {
     "RunOnceActivity.OpenProjectViewOnStart": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/Rawan/Desktop/Projet-Glop-backend/.github",
     "node.js.detected.package.eslint": "true",
@@ -70,6 +71,9 @@
       <workItem from="1728628779288" duration="439000" />
       <workItem from="1728675976187" duration="247000" />
       <workItem from="1728676821742" duration="2141000" />
+      <workItem from="1728843167457" duration="72000" />
+      <workItem from="1728843268444" duration="15000" />
+      <workItem from="1729372011284" duration="501000" />
     </task>
     <servers />
   </component>
