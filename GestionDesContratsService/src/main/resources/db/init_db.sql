@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 CREATE SCHEMA IF NOT EXISTS gestion_contrats AUTHORIZATION dev_user;
 INSERT INTO gestion_contrats.offre (nom_offre, description_min, description_max, prix_min, prix_max) VALUES
                                                                                                          ('SansAcc-SansMoyTra',
@@ -24,3 +25,6 @@ INSERT INTO gestion_contrats.offre (nom_offre, description_min, description_max,
                                                                                                           '65€/mois/personneAccompagnante',
                                                                                                           '130€/mois/personneAccompagnante');
 
+=======
+CREATE SCHEMA IF NOT EXISTS gestion_contrats AUTHORIZATION dev_user;
+>>>>>>> 14841e2 (creating new schema on run for gestion contrat)
