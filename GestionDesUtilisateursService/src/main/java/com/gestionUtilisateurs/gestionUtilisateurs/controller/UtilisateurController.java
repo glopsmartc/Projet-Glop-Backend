@@ -1,5 +1,6 @@
 package com.gestionUtilisateurs.gestionUtilisateurs.controller;
 
+import com.gestionUtilisateurs.gestionUtilisateurs.dto.UtilisateurDTO;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.Utilisateur;
 import com.gestionUtilisateurs.gestionUtilisateurs.service.UserServiceItf;
 import org.springframework.http.ResponseEntity;
@@ -21,12 +22,19 @@ public class UtilisateurController {
 
     @GetMapping("/current-user")
     @PreAuthorize("isAuthenticated()")
-    public ResponseEntity<Utilisateur> authenticatedUser() {
+    public ResponseEntity<UtilisateurDTO> authenticatedUser() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        Utilisateur currentUser = (Utilisateur) authentication.getPrincipal();
+        Utilisateur utilisateur = (Utilisateur) authentication.getPrincipal();
 
-        return ResponseEntity.ok(currentUser);
+        UtilisateurDTO utilisateurDTO = new UtilisateurDTO();
+        utilisateurDTO.setRole(utilisateur.getRole().getName().toString());
+        utilisateurDTO.setUsername(utilisateur.getUsername());
+        utilisateurDTO.setEmail(utilisateur.getEmail());
+        utilisateurDTO.setPrenom(utilisateur.getPrenom());
+        utilisateurDTO.setNom(utilisateur.getNom());
+
+        return ResponseEntity.ok(utilisateurDTO);
     }
 
     @GetMapping("/")

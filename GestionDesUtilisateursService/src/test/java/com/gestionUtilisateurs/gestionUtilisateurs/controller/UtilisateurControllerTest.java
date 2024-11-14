@@ -1,6 +1,7 @@
 package com.gestionUtilisateurs.gestionUtilisateurs.controller;
 
 import com.gestionUtilisateurs.gestionUtilisateurs.controller.UtilisateurController;
+import com.gestionUtilisateurs.gestionUtilisateurs.dto.UtilisateurDTO;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.Utilisateur;
 import com.gestionUtilisateurs.gestionUtilisateurs.service.UserServiceItf;
 import org.junit.jupiter.api.BeforeEach;
@@ -46,7 +47,7 @@ class UtilisateurControllerTest {
         when(securityContext.getAuthentication()).thenReturn(authentication);
         when(authentication.getPrincipal()).thenReturn(mockUser);
 
-        ResponseEntity<Utilisateur> response = utilisateurController.authenticatedUser();
+        ResponseEntity<UtilisateurDTO> response = utilisateurController.authenticatedUser();
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(mockUser, response.getBody());
     }
