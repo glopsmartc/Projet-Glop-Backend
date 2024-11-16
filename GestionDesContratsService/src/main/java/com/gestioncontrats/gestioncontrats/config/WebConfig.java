@@ -1,7 +1,6 @@
 package com.gestioncontrats.gestioncontrats.config;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -14,9 +13,11 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void addCorsMappings(CorsRegistry registry) {
-        registry.addMapping("/**") // Permet tous les chemins
-                .allowedOrigins(allowedOrigins) // Utilise les origines configurées
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS") // Méthodes autorisées
-                .allowCredentials(true); // Autorise les cookies et les sessions
+        registry.addMapping("/**")  // Permet tous les chemins
+                .allowedOrigins(allowedOrigins)  // Utilise les origines configurées
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")  // Méthodes autorisées
+                .allowedHeaders("*")  // Autorise tous les en-têtes
+                .exposedHeaders("Authorization")  // Expose l'en-tête Authorization
+                .allowCredentials(true);  // Autorise les cookies et les sessions
     }
 }

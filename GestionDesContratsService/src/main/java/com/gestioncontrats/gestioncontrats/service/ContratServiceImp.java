@@ -1,6 +1,7 @@
 package com.gestioncontrats.gestioncontrats.service;
 
 import com.gestioncontrats.gestioncontrats.dto.CreateContractRequest;
+import com.gestioncontrats.gestioncontrats.dto.OffreResponse;
 import com.gestioncontrats.gestioncontrats.model.*;
 import org.springframework.stereotype.Service;
 
@@ -47,10 +48,80 @@ public class ContratServiceImp implements ContratServiceItf {
 
         // Trouver l'offre correspondante
         Offre offreCorrespondante = findMatchingOffre(request);
+        if (offreCorrespondante == null) {
+            throw new IllegalArgumentException("Aucune offre correspondante trouvée.");
+        }
         contrat.setOffre(offreCorrespondante);
 
         // Sauvegarder le contrat dans la base de données
         return contratRepository.save(contrat);
+    }
+
+    @Override
+    public OffreResponse buildOffreResponse(Offre offre, CreateContractRequest request) {
+        int nombrePersonnes = request.getNombrePersonnes() != null ? request.getNombrePersonnes() : 0;
+
+        // Récupération des prix et gestion du suffixe "/personneAccompagnante"
+        double prixMin = parsePrix(offre.getPrixMin(), nombrePersonnes);
+        double prixMax = parsePrix(offre.getPrixMax(), nombrePersonnes);
+
+        double prixMinTotal = prixMin;
+        double prixMaxTotal = prixMax;
+
+        // Appliquer le calcul en fonction de la durée du contrat
+        double ajustementPrix = 1.0;
+        switch (request.getDureeContrat()) {
+            case "1_mois":
+                ajustementPrix = 1.0; // Pas de modification pour 1 mois
+                break;
+            case "3_mois":
+                ajustementPrix = 3.0; // Multiplication par 3 pour 3 mois
+                break;
+            case "4_mois":
+                ajustementPrix = 4.0; // Multiplication par 4 pour 4 mois
+                break;
+            case "1_an":
+                ajustementPrix = 12.0; // Multiplication par 12 pour 1 an
+                break;
+            case "1_voyage":
+                if (request.getDateAller() != null && request.getDateRetour() != null) {
+                    long daysBetween = java.time.temporal.ChronoUnit.DAYS.between(request.getDateAller(), request.getDateRetour());
+                    ajustementPrix = daysBetween / 30.0; // Calcul de la durée en mois
+                }
+                break;
+            default:
+                throw new IllegalArgumentException("Durée du contrat invalide");
+        }
+
+        // Appliquer l'ajustement sur les prix
+        prixMinTotal *= ajustementPrix;
+        prixMaxTotal *= ajustementPrix;
+
+        OffreResponse response = new OffreResponse();
+        response.setNomOffre(offre.getNomOffre());
+        response.setDescriptionMin(offre.getDescriptionMin());
+        response.setDescriptionMax(offre.getDescriptionMax());
+        response.setPrixMinTotal(String.format("%.2f€", prixMinTotal));
+        response.setPrixMaxTotal(String.format("%.2f€", prixMaxTotal));
+
+        return response;
+    }
+
+    // Méthode utilitaire pour extraire le prix
+    private double parsePrix(String prix, int nombrePersonnes) {
+        System.out.println("Prix avant parsing : " + prix);
+        System.out.println("Nombre de personnes : " + nombrePersonnes);
+        if (prix == null || prix.isEmpty()) {
+            return 0.0;
+        }
+
+        String prixNet = prix.replaceAll("[^\\d.]", "");
+        double prixDouble = Double.parseDouble(prixNet);
+
+        if (prix.contains("/personneAccompagnante")) {
+            return prixDouble * (nombrePersonnes > 0 ? nombrePersonnes : 1);
+        }
+        return prixDouble;
     }
 
     @Override
@@ -59,19 +130,20 @@ public class ContratServiceImp implements ContratServiceItf {
         for (Offre offre : offres) {
             boolean match = true;
 
-            // Logique de correspondance basée sur les critères du formulaire
+            // Logique de correspondance basée sur les critères
             if (request.isAssurerTransport() && !offre.getNomOffre().contains("AvecMoyTra")) {
                 match = false;
             }
             if (request.isAssurerPersonnes() && !offre.getNomOffre().contains("AvecAcc")) {
                 match = false;
             }
-            // Ajouter d'autres conditions si nécessaires
 
             if (match) {
                 return offre;
             }
         }
-        return null; // Si aucune offre ne correspond
+        return null; // Aucune offre trouvée
     }
+
+
 }

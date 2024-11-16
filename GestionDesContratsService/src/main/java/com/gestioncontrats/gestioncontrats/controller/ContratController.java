@@ -2,6 +2,7 @@ package com.gestioncontrats.gestioncontrats.controller;
 
 import com.gestioncontrats.gestioncontrats.config.UserClientService;
 import com.gestioncontrats.gestioncontrats.dto.CreateContractRequest;
+import com.gestioncontrats.gestioncontrats.dto.OffreResponse;
 import com.gestioncontrats.gestioncontrats.dto.UtilisateurDTO;
 import com.gestioncontrats.gestioncontrats.model.Contrat;
 import com.gestioncontrats.gestioncontrats.model.Offre;
@@ -44,19 +45,20 @@ public class ContratController {
         return ResponseEntity.ok(contrat);
     }
 
-    @GetMapping("/getOffre")
+    @PostMapping("/getOffre")
+    @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<?> getOffreCorrespondante(@RequestBody CreateContractRequest request) {
         Offre offreCorrespondante = contratService.findMatchingOffre(request);
         if (offreCorrespondante == null) {
             return ResponseEntity.badRequest().body("Aucune offre correspondante trouvée.");
         }
-
-        // Retourner uniquement l'offre
-        return ResponseEntity.ok(offreCorrespondante);
+        // Construire la réponse enrichie
+        OffreResponse response = contratService.buildOffreResponse(offreCorrespondante, request);
+        return ResponseEntity.ok(response);
     }
 
     @GetMapping("/")
-    @PreAuthorize("hasRole('CLIENT')")
+    //@PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<List<Offre>> allOffres() {
         List<Offre> offres = new ArrayList<>();
         System.out.println("Entered allOffres method");
