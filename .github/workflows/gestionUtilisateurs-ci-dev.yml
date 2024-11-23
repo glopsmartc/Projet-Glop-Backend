@@ -47,6 +47,9 @@ jobs:
           EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
           EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
         run: echo "Environment variables are set."
+        
+      - name: Debug Environment Variables
+        run: echo "EMAIL_USERNAME=${{ secrets.EMAIL_USERNAME }}" && echo "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}"
 
       # Set up JDK for backend tests
       - name: Set up JDK 21
