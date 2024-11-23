@@ -49,6 +49,12 @@ jobs:
           java-version: '21'
           distribution: 'temurin'
 
+      - name: Set environment variables
+        env:
+          EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
+          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+        run: echo "Environment variables are set."
+
       # Run JUnit tests for backend
       - name: Run Backend JUnit Tests
         working-directory: ./GestionDesUtilisateursService
