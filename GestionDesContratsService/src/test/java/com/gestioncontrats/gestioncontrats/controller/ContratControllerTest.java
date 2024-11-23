@@ -1,8 +1,11 @@
 package com.gestioncontrats.gestioncontrats.controller;
 
+import com.gestioncontrats.gestioncontrats.config.UserClientService;
 import com.gestioncontrats.gestioncontrats.dto.CreateContractRequest;
+import com.gestioncontrats.gestioncontrats.dto.OffreResponse;
 import com.gestioncontrats.gestioncontrats.model.Contrat;
 import com.gestioncontrats.gestioncontrats.model.Offre;
+import com.gestioncontrats.gestioncontrats.model.OffreRepository;
 import com.gestioncontrats.gestioncontrats.service.ContratServiceItf;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -21,6 +24,12 @@ class ContratControllerTest {
     @Mock
     private ContratServiceItf contratService;
 
+    @Mock
+    private OffreRepository offreRepository;
+
+    @Mock
+    private UserClientService utilisateurService;
+
     @InjectMocks
     private ContratController contratController;
 
@@ -34,6 +43,7 @@ class ContratControllerTest {
         Contrat contrat = new Contrat();
         Offre offre = new Offre();
         contrat.setOffre(offre);
+
         when(contratService.createContract(any(CreateContractRequest.class))).thenReturn(contrat);
 
         CreateContractRequest request = new CreateContractRequest();
@@ -48,6 +58,7 @@ class ContratControllerTest {
     void testCreateContract_noMatchingOffre() {
         Contrat contrat = new Contrat();
         contrat.setOffre(null);
+
         when(contratService.createContract(any(CreateContractRequest.class))).thenReturn(contrat);
 
         CreateContractRequest request = new CreateContractRequest();
@@ -61,14 +72,16 @@ class ContratControllerTest {
     @Test
     void testGetOffreCorrespondante_withMatchingOffre() {
         Offre offre = new Offre();
+        OffreResponse expectedResponse = new OffreResponse();
         when(contratService.findMatchingOffre(any(CreateContractRequest.class))).thenReturn(offre);
+        when(contratService.buildOffreResponse(any(Offre.class), any(CreateContractRequest.class))).thenReturn(expectedResponse);
 
         CreateContractRequest request = new CreateContractRequest();
 
         ResponseEntity<?> response = contratController.getOffreCorrespondante(request);
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals(offre, response.getBody());
+        assertEquals(expectedResponse, response.getBody());
     }
 
     @Test

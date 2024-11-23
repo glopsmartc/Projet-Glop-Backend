@@ -2,7 +2,6 @@ package com.gestioncontrats.gestioncontrats.service;
 
 import com.gestioncontrats.gestioncontrats.dto.AccompagnantDto;
 import com.gestioncontrats.gestioncontrats.dto.CreateContractRequest;
-import com.gestioncontrats.gestioncontrats.model.Contrat;
 import com.gestioncontrats.gestioncontrats.model.Offre;
 import com.gestioncontrats.gestioncontrats.model.ContratRepository;
 import com.gestioncontrats.gestioncontrats.model.OffreRepository;
@@ -16,9 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.mockito.ArgumentMatchers.any;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.when;
 
 class ContratServiceImpTest {
@@ -57,18 +54,16 @@ class ContratServiceImpTest {
         CreateContractRequest request = new CreateContractRequest();
         request.setAssurerTransport(true);
         request.setAssurerPersonnes(true);
-
         request.setAccompagnants(new ArrayList<>());
 
         when(offreRepository.findAll()).thenReturn(Collections.emptyList());
 
-        Contrat savedContrat = new Contrat();
-        savedContrat.setOffre(null);
-        when(contratRepository.save(any(Contrat.class))).thenReturn(savedContrat);
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> contratServiceImp.createContract(request)
+        );
 
-        Contrat result = contratServiceImp.createContract(request);
-
-        assertNull(result.getOffre());
+        assertEquals("Aucune offre correspondante trouvée.", exception.getMessage());
     }
 
 
