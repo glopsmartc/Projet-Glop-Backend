@@ -7,6 +7,8 @@ on:
 
 env:
   IP_ADDRESS_BACK: ${{ secrets.IP_ADDRESS_BACK }}
+  EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
+  EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
 
 jobs:
   compile-GestionUtilisateursService:
