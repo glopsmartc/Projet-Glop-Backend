@@ -8,11 +8,12 @@ import io.jsonwebtoken.security.Keys;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,6 +26,11 @@ public class JwtService {
 
     public String extractUsername(String token) {
         return extractClaim(token, Claims::getSubject);
+    }
+
+    public List<String> extractRoles(String token) {
+        Claims claims = extractAllClaims(token);
+        return (List<String>) claims.get("roles");  // Get roles claim
     }
 
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
@@ -49,6 +55,13 @@ public class JwtService {
             UserDetails userDetails,
             long expiration
     ) {
+        // Get roles from userDetails and include them in the claims
+        List<String> roles = userDetails.getAuthorities().stream()
+                .map(authority -> authority.getAuthority()) // Convert authorities to role strings
+                .toList();
+
+        extraClaims.put("roles", roles); // Add roles to claims
+
         return Jwts
                 .builder()
                 .setClaims(extraClaims)

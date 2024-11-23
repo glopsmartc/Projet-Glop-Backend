@@ -17,5 +17,5 @@ RUN apt-get update && apt-get install -y postgresql-client && rm -rf /var/lib/ap
 
 # Copy the built jar file from the build stage
 COPY --from=build /app/target/*.jar app.jar
-EXPOSE 8081
+EXPOSE 8082
 ENTRYPOINT ["java", "-jar", "app.jar", "--spring.profiles.active=prod"]

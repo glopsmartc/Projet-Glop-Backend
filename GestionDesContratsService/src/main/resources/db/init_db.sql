@@ -1,0 +1,1 @@
+CREATE SCHEMA IF NOT EXISTS gestion_contrats AUTHORIZATION dev_user;

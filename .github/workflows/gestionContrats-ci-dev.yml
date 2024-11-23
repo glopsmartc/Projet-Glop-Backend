@@ -1,16 +1,16 @@
-name: CI/CD Pipeline Microservice Gestion des utilisateurs
+name: CI/CD Pipeline Microservice Gestion des contrats
 
 on:
   push:
     branches:
       - feature/*
     paths:
-      - 'GestionDesUtilisateursService/**'
+      - 'GestionDesContratsService/**'
   pull_request:
     branches:
       - develop
     paths:
-      - 'GestionDesUtilisateursService/**'
+      - 'GestionDesContratsService/**'
 
 jobs:
   compile:
@@ -28,8 +28,8 @@ jobs:
           distribution: 'temurin'
 
       # Compile the microservice
-      - name: Compile Microservice Gestion des utilisateurs
-        working-directory: ./GestionDesUtilisateursService
+      - name: Compile Microservice Gestion des contrats
+        working-directory: ./GestionDesContratsService
         run: |
           mvn clean compile
           echo "Compilation successful"
@@ -42,15 +42,6 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set environment variables
-        env:
-          EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
-          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-        run: echo "Environment variables are set."
-        
-      - name: Debug Environment Variables
-        run: echo "EMAIL_USERNAME=${{ secrets.EMAIL_USERNAME }}" && echo "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}"
-
       # Set up JDK for backend tests
       - name: Set up JDK 21
         uses: actions/setup-java@v3
@@ -60,7 +51,7 @@ jobs:
 
       # Run JUnit tests for backend
       - name: Run Backend JUnit Tests
-        working-directory: ./GestionDesUtilisateursService
+        working-directory: ./GestionDesContratsService
         run: |
           mvn install
           mvn test
