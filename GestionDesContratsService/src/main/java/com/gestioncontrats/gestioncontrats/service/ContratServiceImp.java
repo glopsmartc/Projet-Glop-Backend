@@ -1,26 +1,32 @@
 package com.gestioncontrats.gestioncontrats.service;
 
+import com.gestioncontrats.gestioncontrats.config.UserClientService;
 import com.gestioncontrats.gestioncontrats.dto.CreateContractRequest;
 import com.gestioncontrats.gestioncontrats.dto.OffreResponse;
 import com.gestioncontrats.gestioncontrats.model.*;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class ContratServiceImp implements ContratServiceItf {
-
     private final ContratRepository contratRepository;
     private final OffreRepository offreRepository;
 
-    public ContratServiceImp(ContratRepository contratRepository, OffreRepository offreRepository) {
+    private final UserClientService userClientService;
+
+    public ContratServiceImp(ContratRepository contratRepository, OffreRepository offreRepository, UserClientService userClientService) {
         this.contratRepository = contratRepository;
         this.offreRepository = offreRepository;
+        this.userClientService = userClientService;
     }
 
     @Override
-    public Contrat createContract(CreateContractRequest request) {
+    public Contrat createContract(CreateContractRequest request, MultipartFile pdfFile, String token) throws IOException  {
         Contrat contrat = new Contrat();
         contrat.setDureeContrat(request.getDureeContrat());
         contrat.setAssurerTransport(request.isAssurerTransport());
@@ -35,7 +41,8 @@ public class ContratServiceImp implements ContratServiceItf {
         contrat.setDateRetour(request.getDateRetour());
         contrat.setNumeroTelephone(request.getNumeroTelephone());
         contrat.setDateNaissanceSouscripteur(request.getDateNaissanceSouscripteur());
-
+        contrat.setPrice(request.getPrice());
+        contrat.setClient(userClientService.getAuthenticatedUser(token).getEmail());
         // Convertir les accompagnants
         contrat.setAccompagnants(request.getAccompagnants().stream().map(dto -> {
             Accompagnant accompagnant = new Accompagnant();
@@ -47,11 +54,17 @@ public class ContratServiceImp implements ContratServiceItf {
         }).collect(Collectors.toList()));
 
         // Trouver l'offre correspondante
-        Offre offreCorrespondante = findMatchingOffre(request);
+        Offre offreCorrespondante = offreRepository.findByNomOffre(request.getPlanName());
         if (offreCorrespondante == null) {
             throw new IllegalArgumentException("Aucune offre correspondante trouvée.");
         }
         contrat.setOffre(offreCorrespondante);
+
+        // Sauvegarder le fichier PDF
+        String pdfPath = savePdfFile(pdfFile);
+
+        // Associer le chemin du PDF au contrat
+        contrat.setPdfPath(pdfPath);
 
         // Sauvegarder le contrat dans la base de données
         return contratRepository.save(contrat);
@@ -145,5 +158,23 @@ public class ContratServiceImp implements ContratServiceItf {
         return null; // Aucune offre trouvée
     }
 
+    // sauvegarder le pdf sur le disque
+    public String savePdfFile(MultipartFile file) throws IOException {
+        // Get the user's Documents directory
+        String documentsPath = System.getProperty("user.home") + File.separator + "Documents";
 
+        // Ensure the directory exists
+        File directory = new File(documentsPath);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        // Create the full file path
+        File destinationFile = new File(documentsPath + File.separator + file.getOriginalFilename());
+
+        // Save the file
+        file.transferTo(destinationFile);
+        System.out.println("File saved to: " + destinationFile.getAbsolutePath());
+    return destinationFile.getAbsolutePath();
+    }
 }
