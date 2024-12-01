@@ -4,6 +4,7 @@ import com.gestioncontrats.gestioncontrats.config.UserClientService;
 import com.gestioncontrats.gestioncontrats.dto.CreateContractRequest;
 import com.gestioncontrats.gestioncontrats.dto.OffreResponse;
 import com.gestioncontrats.gestioncontrats.model.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -14,6 +15,9 @@ import java.util.stream.Collectors;
 
 @Service
 public class ContratServiceImp implements ContratServiceItf {
+    @Value("${app.storage.path}")
+    private String storagePath;
+
     private final ContratRepository contratRepository;
     private final OffreRepository offreRepository;
 
@@ -26,7 +30,8 @@ public class ContratServiceImp implements ContratServiceItf {
     }
 
     @Override
-    public Contrat createContract(CreateContractRequest request, MultipartFile pdfFile, String token) throws IOException  {
+    public Contrat createContract(CreateContractRequest request, MultipartFile pdfFile, String token) throws IOException {
+        // Create the contract object
         Contrat contrat = new Contrat();
         contrat.setDureeContrat(request.getDureeContrat());
         contrat.setAssurerTransport(request.isAssurerTransport());
@@ -43,7 +48,8 @@ public class ContratServiceImp implements ContratServiceItf {
         contrat.setDateNaissanceSouscripteur(request.getDateNaissanceSouscripteur());
         contrat.setPrice(request.getPrice());
         contrat.setClient(userClientService.getAuthenticatedUser(token).getEmail());
-        // Convertir les accompagnants
+
+        // Convert accompanying persons
         contrat.setAccompagnants(request.getAccompagnants().stream().map(dto -> {
             Accompagnant accompagnant = new Accompagnant();
             accompagnant.setNom(dto.getNom());
@@ -53,23 +59,24 @@ public class ContratServiceImp implements ContratServiceItf {
             return accompagnant;
         }).collect(Collectors.toList()));
 
-        // Trouver l'offre correspondante
+        // Find the corresponding offer
         Offre offreCorrespondante = offreRepository.findByNomOffre(request.getPlanName());
         if (offreCorrespondante == null) {
             throw new IllegalArgumentException("Aucune offre correspondante trouvée.");
         }
         contrat.setOffre(offreCorrespondante);
 
-        // Sauvegarder le fichier PDF
-        String pdfPath = savePdfFile(pdfFile);
+        // Save the contract first to generate its ID
+        Contrat savedContrat = contratRepository.save(contrat);
 
-        // Associer le chemin du PDF au contrat
-        contrat.setPdfPath(pdfPath);
+        String pdfPath = savePdfFile(pdfFile, savedContrat.getId());
 
-        // Sauvegarder le contrat dans la base de données
-        return contratRepository.save(contrat);
+        // Set the PDF path in the saved contract
+        savedContrat.setPdfPath(pdfPath);
+
+        // Return the contract with the PDF path saved
+        return contratRepository.save(savedContrat);
     }
-
     @Override
     public OffreResponse buildOffreResponse(Offre offre, CreateContractRequest request) {
         int nombrePersonnes = request.getNombrePersonnes() != null ? request.getNombrePersonnes() : 0;
@@ -159,18 +166,21 @@ public class ContratServiceImp implements ContratServiceItf {
     }
 
     // sauvegarder le pdf sur le disque
-    public String savePdfFile(MultipartFile file) throws IOException {
+    public String savePdfFile(MultipartFile file, Long id) throws IOException {
         // Get the user's Documents directory
-        String documentsPath = System.getProperty("user.home") + File.separator + "Documents";
+        // String documentsPath = System.getProperty("user.home") + File.separator + "Documents";
+
+        // Créer le nom de fichier avec l'ID du contrat
+        String fileName = id + "_" + file.getOriginalFilename();
 
         // Ensure the directory exists
-        File directory = new File(documentsPath);
+        File directory = new File(storagePath);
         if (!directory.exists()) {
             directory.mkdirs();
         }
 
         // Create the full file path
-        File destinationFile = new File(documentsPath + File.separator + file.getOriginalFilename());
+        File destinationFile = new File(storagePath + File.separator + fileName);
 
         // Save the file
         file.transferTo(destinationFile);

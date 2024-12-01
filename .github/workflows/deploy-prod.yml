@@ -146,7 +146,7 @@ jobs:
 
       - name: Run New Backend Container GestionUtilisateursService
         run: |
-          ssh -i ma-paire.pem -o StrictHostKeyChecking=no ubuntu@$IP_ADDRESS_BACK 'sudo docker run -d --name backend-gestion-utilisateurs -e SPRING_DATASOURCE_URL="${{ secrets.SPRING_DATASOURCE_URL }}" -e SPRING_DATASOURCE_USERNAME="${{ secrets.SPRING_DATASOURCE_USERNAME }}" -e SPRING_DATASOURCE_PASSWORD="${{ secrets.SPRING_DATASOURCE_PASSWORD }}" -e EMAIL_USERNAME="${{ secrets.EMAIL_USERNAME }}" -e EMAIL_PASSWORD="${{ secrets.EMAIL_PASSWORD }}" -e IP_ADDRESS_BACK="${{ secrets.IP_ADDRESS_FRONT }}" -e IP_ADDRESS_BACK="${{ secrets.IP_ADDRESS_FRONT }}" -p 80:8081 ${{ secrets.DOCKER_USERNAME }}/backend-gestion-utilisateurs:${{ github.sha }}'
+          ssh -i ma-paire.pem -o StrictHostKeyChecking=no ubuntu@$IP_ADDRESS_BACK 'sudo docker run -d --name backend-gestion-utilisateurs -e SPRING_DATASOURCE_URL="${{ secrets.SPRING_DATASOURCE_URL }}" -e SPRING_DATASOURCE_USERNAME="${{ secrets.SPRING_DATASOURCE_USERNAME }}" -e SPRING_DATASOURCE_PASSWORD="${{ secrets.SPRING_DATASOURCE_PASSWORD }}" -e EMAIL_USERNAME="${{ secrets.EMAIL_USERNAME }}" -e EMAIL_PASSWORD="${{ secrets.EMAIL_PASSWORD }}" -e IP_ADDRESS_BACK="${{ secrets.IP_ADDRESS_FRONT }}" -e IP_ADDRESS_BACK="${{ secrets.IP_ADDRESS_FRONT }}" -p 80:8081 -v /docker-volumes/backend-gestion-contrats:/app/data ${{ secrets.DOCKER_USERNAME }}/backend-gestion-utilisateurs:${{ github.sha }}'
 
   compile-GestionContratsService:
     if: contains(github.event.head_commit.message, 'GestionDesContratsService/') || contains(github.event.head_commit.files, 'GestionDesContratsService/')
