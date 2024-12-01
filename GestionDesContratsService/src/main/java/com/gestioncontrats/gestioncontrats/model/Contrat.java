@@ -1,5 +1,7 @@
 package com.gestioncontrats.gestioncontrats.model;
 
+import ch.qos.logback.core.net.server.Client;
+import com.gestioncontrats.gestioncontrats.dto.UtilisateurDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -32,6 +34,12 @@ public class Contrat {
     private LocalDate dateRetour;
     private String numeroTelephone;
     private LocalDate dateNaissanceSouscripteur;
+
+    private String pdfPath;
+
+    private String price;
+
+    private String client;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "contrat_id")

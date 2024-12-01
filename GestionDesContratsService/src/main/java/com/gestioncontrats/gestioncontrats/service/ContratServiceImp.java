@@ -1,26 +1,37 @@
 package com.gestioncontrats.gestioncontrats.service;
 
+import com.gestioncontrats.gestioncontrats.config.UserClientService;
 import com.gestioncontrats.gestioncontrats.dto.CreateContractRequest;
 import com.gestioncontrats.gestioncontrats.dto.OffreResponse;
 import com.gestioncontrats.gestioncontrats.model.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
 public class ContratServiceImp implements ContratServiceItf {
+    @Value("${app.storage.path}")
+    private String storagePath;
 
     private final ContratRepository contratRepository;
     private final OffreRepository offreRepository;
 
-    public ContratServiceImp(ContratRepository contratRepository, OffreRepository offreRepository) {
+    private final UserClientService userClientService;
+
+    public ContratServiceImp(ContratRepository contratRepository, OffreRepository offreRepository, UserClientService userClientService) {
         this.contratRepository = contratRepository;
         this.offreRepository = offreRepository;
+        this.userClientService = userClientService;
     }
 
     @Override
-    public Contrat createContract(CreateContractRequest request) {
+    public Contrat createContract(CreateContractRequest request, MultipartFile pdfFile, String token) throws IOException {
+        // Create the contract object
         Contrat contrat = new Contrat();
         contrat.setDureeContrat(request.getDureeContrat());
         contrat.setAssurerTransport(request.isAssurerTransport());
@@ -35,8 +46,10 @@ public class ContratServiceImp implements ContratServiceItf {
         contrat.setDateRetour(request.getDateRetour());
         contrat.setNumeroTelephone(request.getNumeroTelephone());
         contrat.setDateNaissanceSouscripteur(request.getDateNaissanceSouscripteur());
+        contrat.setPrice(request.getPrice());
+        contrat.setClient(userClientService.getAuthenticatedUser(token).getEmail());
 
-        // Convertir les accompagnants
+        // Convert accompanying persons
         contrat.setAccompagnants(request.getAccompagnants().stream().map(dto -> {
             Accompagnant accompagnant = new Accompagnant();
             accompagnant.setNom(dto.getNom());
@@ -46,17 +59,24 @@ public class ContratServiceImp implements ContratServiceItf {
             return accompagnant;
         }).collect(Collectors.toList()));
 
-        // Trouver l'offre correspondante
-        Offre offreCorrespondante = findMatchingOffre(request);
+        // Find the corresponding offer
+        Offre offreCorrespondante = offreRepository.findByNomOffre(request.getPlanName());
         if (offreCorrespondante == null) {
             throw new IllegalArgumentException("Aucune offre correspondante trouvée.");
         }
         contrat.setOffre(offreCorrespondante);
 
-        // Sauvegarder le contrat dans la base de données
-        return contratRepository.save(contrat);
-    }
+        // Save the contract first to generate its ID
+        Contrat savedContrat = contratRepository.save(contrat);
 
+        String pdfPath = savePdfFile(pdfFile, savedContrat.getId());
+
+        // Set the PDF path in the saved contract
+        savedContrat.setPdfPath(pdfPath);
+
+        // Return the contract with the PDF path saved
+        return contratRepository.save(savedContrat);
+    }
     @Override
     public OffreResponse buildOffreResponse(Offre offre, CreateContractRequest request) {
         int nombrePersonnes = request.getNombrePersonnes() != null ? request.getNombrePersonnes() : 0;
@@ -145,5 +165,26 @@ public class ContratServiceImp implements ContratServiceItf {
         return null; // Aucune offre trouvée
     }
 
+    // sauvegarder le pdf sur le disque
+    public String savePdfFile(MultipartFile file, Long id) throws IOException {
+        // Get the user's Documents directory
+        // String documentsPath = System.getProperty("user.home") + File.separator + "Documents";
 
+        // Créer le nom de fichier avec l'ID du contrat
+        String fileName = id + "_" + file.getOriginalFilename();
+
+        // Ensure the directory exists
+        File directory = new File(storagePath);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+
+        // Create the full file path
+        File destinationFile = new File(storagePath + File.separator + fileName);
+
+        // Save the file
+        file.transferTo(destinationFile);
+        System.out.println("File saved to: " + destinationFile.getAbsolutePath());
+    return destinationFile.getAbsolutePath();
+    }
 }

@@ -16,6 +16,7 @@ public class OffreSeeder implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
+        // Définir les offres à insérer
         Offre offre1 = new Offre(
                 "SansAcc-SansMoyTra",
                 "Conseils médicaux\nOrientation vers des hôpitaux référencés",
@@ -47,11 +48,19 @@ public class OffreSeeder implements CommandLineRunner {
                 "65€/mois/personneAccompagnante",
                 "130€/mois/personneAccompagnante"
         );
-        offreRepository.save(offre1);
-        offreRepository.save(offre2);
-        offreRepository.save(offre3);
-        offreRepository.save(offre4);
 
-        System.out.println("Offres insérées avec succès !");
+        // Vérifier et insérer les offres si elles n'existent pas
+        saveIfNotExists(offre1);
+        saveIfNotExists(offre2);
+        saveIfNotExists(offre3);
+        saveIfNotExists(offre4);
+
+        System.out.println("Offres insérées si non existantes !");
+    }
+
+    private void saveIfNotExists(Offre offre) {
+        if (!offreRepository.existsByNomOffre(offre.getNomOffre())) {
+            offreRepository.save(offre);
+        }
     }
 }

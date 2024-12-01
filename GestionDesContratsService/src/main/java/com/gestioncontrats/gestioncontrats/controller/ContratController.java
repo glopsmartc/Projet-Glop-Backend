@@ -1,5 +1,7 @@
 package com.gestioncontrats.gestioncontrats.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.gestioncontrats.gestioncontrats.config.UserClientService;
 import com.gestioncontrats.gestioncontrats.dto.CreateContractRequest;
 import com.gestioncontrats.gestioncontrats.dto.OffreResponse;
@@ -14,9 +16,13 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
 @RequestMapping("/api/contrat")
 @RestController
@@ -33,17 +39,28 @@ public class ContratController {
         this.utilisateurService = utilisateurService;
     }
 
-    @PostMapping("/create")
-    public ResponseEntity<?> createContract(@RequestBody CreateContractRequest request) {
-        Contrat contrat = contratService.createContract(request);
+    @PostMapping( value="/create",  consumes = MULTIPART_FORM_DATA_VALUE)
+    //@PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<?> createContract(@RequestHeader("Authorization") String authorizationHeader, @RequestPart("request") String requestJson, @RequestPart(value = "file") MultipartFile pdfFile) throws IOException {
+        String token = authorizationHeader.replace("Bearer ", "");
 
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.registerModule(new JavaTimeModule());
+        CreateContractRequest request = mapper.readValue(requestJson, CreateContractRequest.class);
+
+        System.out.println("Received Content-Type: " + pdfFile.getContentType());
+        System.out.println("Request Details: " + request);
+        // Deserialize JSON
+        if (!pdfFile.getContentType().equals("application/pdf")) {
+            return ResponseEntity.badRequest().body("Le fichier doit être un PDF.");
+        }
+        Contrat contrat = contratService.createContract(request, pdfFile, token);
         if (contrat.getOffre() == null) {
             return ResponseEntity.badRequest().body("Aucune offre correspondante trouvée.");
         }
-
-        // Retourne le contrat avec l'offre correspondante
-        return ResponseEntity.ok(contrat);
+        return new ResponseEntity<>(contrat, HttpStatus.CREATED);
     }
+
 
     @PostMapping("/getOffre")
     @PreAuthorize("hasRole('CLIENT')")

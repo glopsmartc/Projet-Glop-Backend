@@ -24,6 +24,8 @@ public class CreateContractRequest {
     private String numeroTelephone;
     private LocalDate dateNaissanceSouscripteur;
     private List<AccompagnantDto> accompagnants;
+    private String planName;
+    private String price;
 }
 
 
