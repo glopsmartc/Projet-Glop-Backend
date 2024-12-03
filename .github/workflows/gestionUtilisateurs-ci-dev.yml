@@ -1,5 +1,9 @@
 name: CI/CD Pipeline Microservice Gestion des utilisateurs
 
+env:
+  EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
+  EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
+  
 on:
   push:
     branches:
@@ -41,16 +45,7 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-
-      - name: Set environment variables
-        env:
-          EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
-          EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-        run: echo "Environment variables are set."
         
-      - name: Debug Environment Variables
-        run: echo "EMAIL_USERNAME=${{ secrets.EMAIL_USERNAME }}" && echo "EMAIL_PASSWORD=${{ secrets.EMAIL_PASSWORD }}"
-
       # Set up JDK for backend tests
       - name: Set up JDK 21
         uses: actions/setup-java@v3

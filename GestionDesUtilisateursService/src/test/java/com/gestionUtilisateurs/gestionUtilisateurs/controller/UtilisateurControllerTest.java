@@ -1,6 +1,5 @@
 package com.gestionUtilisateurs.gestionUtilisateurs.controller;
 
-import com.gestionUtilisateurs.gestionUtilisateurs.controller.UtilisateurController;
 import com.gestionUtilisateurs.gestionUtilisateurs.dto.UtilisateurDTO;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.Utilisateur;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.Role;
