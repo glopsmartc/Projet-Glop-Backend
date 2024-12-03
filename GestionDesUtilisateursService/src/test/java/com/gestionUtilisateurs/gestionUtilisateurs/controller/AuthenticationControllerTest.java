@@ -1,6 +1,5 @@
 package com.gestionUtilisateurs.gestionUtilisateurs.controller;
 
-import com.gestionUtilisateurs.gestionUtilisateurs.controller.AuthenticationController;
 import com.gestionUtilisateurs.gestionUtilisateurs.dto.*;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.Utilisateur;
 import com.gestionUtilisateurs.gestionUtilisateurs.service.AuthServiceItf;

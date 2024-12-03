@@ -1,6 +1,5 @@
 package com.gestionUtilisateurs.gestionUtilisateurs.config;
 
-import com.gestionUtilisateurs.gestionUtilisateurs.model.Utilisateur;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.UtilisateurRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

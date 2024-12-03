@@ -68,7 +68,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_SECRET }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.organization=glopsmartc -Dsonar.projectKey=glopsmartc_Projet-Glop-Backend -Dsonar.projectBaseDir=./GestionDesUtilisateursService  -Dsonar.sources=./src/main
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.organization=glopsmartc -Dsonar.projectKey=glopsmartc_Projet-Glop-Backend -Dsonar.projectBaseDir=./GestionDesUtilisateursService  -Dsonar.sources=./src
 
   build-GestionUtilisateursService:
     if: contains(github.event.head_commit.message, 'GestionDesUtilisateursService/') || contains(github.event.head_commit.files, 'GestionDesUtilisateursService/')
@@ -205,7 +205,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           SONAR_TOKEN: ${{ secrets.SONAR_SECRET }}
-        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.organization=glopsmartc -Dsonar.projectKey=glopsmartc_Projet-Glop-Backend -Dsonar.projectBaseDir=./GestionDesContratsService  -Dsonar.sources=./src/main
+        run: mvn -B verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.organization=glopsmartc -Dsonar.projectKey=glopsmartc_Projet-Glop-Backend -Dsonar.projectBaseDir=./GestionDesContratsService  -Dsonar.sources=./src
 
   build-GestionContratsService:
     if: contains(github.event.head_commit.message, 'GestionDesContratsService/') || contains(github.event.head_commit.files, 'GestionDesContratsService/')
