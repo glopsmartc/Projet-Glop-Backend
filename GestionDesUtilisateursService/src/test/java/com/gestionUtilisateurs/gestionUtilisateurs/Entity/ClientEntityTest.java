@@ -2,11 +2,8 @@ package com.gestionUtilisateurs.gestionUtilisateurs.Entity;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import com.gestionUtilisateurs.gestionUtilisateurs.bootstrap.RoleSeeder;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.Client;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.ClientRepository;
-import com.gestionUtilisateurs.gestionUtilisateurs.model.Utilisateur;
-import com.gestionUtilisateurs.gestionUtilisateurs.model.UtilisateurRepository;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.Role;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.RoleEnum;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.RoleRepository;

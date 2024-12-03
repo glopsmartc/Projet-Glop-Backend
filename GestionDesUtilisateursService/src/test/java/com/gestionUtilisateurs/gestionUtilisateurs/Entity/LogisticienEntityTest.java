@@ -1,9 +1,7 @@
 package com.gestionUtilisateurs.gestionUtilisateurs.Entity;
 
-import com.gestionUtilisateurs.gestionUtilisateurs.model.ConseillerRepository;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.Logisticien;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.LogisticienRepository;
-import com.gestionUtilisateurs.gestionUtilisateurs.model.UtilisateurRepository;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.Role;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.RoleEnum;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.RoleRepository;

@@ -1,6 +1,5 @@
 package com.gestionUtilisateurs.gestionUtilisateurs.dto;
 
-import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.Role;
 import lombok.Getter;
 import lombok.Setter;
 

@@ -1,6 +1,5 @@
 package com.gestionUtilisateurs.gestionUtilisateurs.controller;
 
-import com.gestionUtilisateurs.gestionUtilisateurs.controller.ConseillerController;
 import com.gestionUtilisateurs.gestionUtilisateurs.dto.RegisterUserDto;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.Utilisateur;
 import com.gestionUtilisateurs.gestionUtilisateurs.service.UserServiceItf;

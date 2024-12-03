@@ -3,7 +3,6 @@ package com.gestionUtilisateurs.gestionUtilisateurs.Entity;
 
 import com.gestionUtilisateurs.gestionUtilisateurs.model.Medecin;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.MedecinRepository;
-import com.gestionUtilisateurs.gestionUtilisateurs.model.UtilisateurRepository;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.Role;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.RoleEnum;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.RoleRepository;
