@@ -44,13 +44,14 @@ public class ContratController {
     public ResponseEntity<?> createContract(@RequestHeader("Authorization") String authorizationHeader, @RequestPart("request") String requestJson, @RequestPart(value = "file") MultipartFile pdfFile) throws IOException {
         String token = authorizationHeader.replace("Bearer ", "");
 
+        // Deserialize JSON
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         CreateContractRequest request = mapper.readValue(requestJson, CreateContractRequest.class);
 
         System.out.println("Received Content-Type: " + pdfFile.getContentType());
         System.out.println("Request Details: " + request);
-        // Deserialize JSON
+        
         if (!pdfFile.getContentType().equals("application/pdf")) {
             return ResponseEntity.badRequest().body("Le fichier doit être un PDF.");
         }
