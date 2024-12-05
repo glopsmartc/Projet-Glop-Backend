@@ -39,7 +39,7 @@ public class ContratController {
         this.utilisateurService = utilisateurService;
     }
 
-    @PostMapping( value="/create",  consumes = MULTIPART_FORM_DATA_VALUE)
+    @PostMapping( value="/create", consumes = {MULTIPART_FORM_DATA_VALUE, "application/json"})
     //@PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<?> createContract(@RequestHeader("Authorization") String authorizationHeader, @RequestPart("request") String requestJson, @RequestPart(value = "file") MultipartFile pdfFile) throws IOException {
         String token = authorizationHeader.replace("Bearer ", "");
