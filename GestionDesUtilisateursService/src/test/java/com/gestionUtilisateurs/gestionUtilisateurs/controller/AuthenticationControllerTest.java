@@ -12,6 +12,8 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -67,10 +69,11 @@ class AuthenticationControllerTest {
         PasswordResetRequest request = new PasswordResetRequest();
         request.setEmail("test@example.com");
 
-        ResponseEntity<String> response = authenticationController.forgotPassword(request);
+        ResponseEntity<Map<String, String>> response = authenticationController.forgotPassword(request);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Email de réinitialisation envoyé.", response.getBody());
+        assertEquals("L'email de réinitialisation a été envoyé avec succès.", response.getBody().get("message"));
     }
+
 
     @Test
     void testResetPassword() {
@@ -78,9 +81,10 @@ class AuthenticationControllerTest {
         request.setToken("mockToken");
         request.setNewPassword("newPassword");
 
-        ResponseEntity<String> response = authenticationController.resetPassword(request);
+        ResponseEntity<Map<String, String>> response = authenticationController.resetPassword(request);
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Mot de passe réinitialisé avec succès.", response.getBody());
+        assertEquals("Mot de passe réinitialisé avec succès.", response.getBody().get("message"));
     }
+
 
 }

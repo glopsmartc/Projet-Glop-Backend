@@ -56,7 +56,7 @@ public class AuthServiceImp implements AuthServiceItf {
         user.setEmail(input.getEmail());
         user.setAdresse(input.getAdresse());
         user.setNumTel(input.getNumTel());
-        user.setDateNaissance(input.getDateNaissance());
+        //user.setDateNaissance(input.getDateNaissance());
         user.setMotDePasse(passwordEncoder.encode(input.getPassword()));
         user.setRole(optionalRole.get());
             System.out.println(user);
