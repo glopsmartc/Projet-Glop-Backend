@@ -75,6 +75,8 @@ public class ContratServiceImp implements ContratServiceItf {
         // Set the PDF path in the saved contract
         savedContrat.setPdfPath(pdfPath);
 
+        userClientService.setDateNaissance(token, request.getDateNaissanceSouscripteur(), userClientService.getAuthenticatedUser(token).getEmail() );
+
         // Return the contract with the PDF path saved
         return contratRepository.save(savedContrat);
     }

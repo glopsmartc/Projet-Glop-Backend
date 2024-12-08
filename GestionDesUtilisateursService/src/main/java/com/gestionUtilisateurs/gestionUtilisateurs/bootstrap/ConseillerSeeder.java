@@ -39,14 +39,14 @@ public class ConseillerSeeder implements ApplicationListener<ContextRefreshedEve
     }
 
     private void createConseiller() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
+        //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         RegisterUserDto userDto = new RegisterUserDto();
         userDto.setNom("Super conseiller");
         userDto.setEmail("super.conseiller@email.com");
         userDto.setPassword("123456");
         userDto.setPrenom("rawan");
         userDto.setAdresse("LILLE");
-        userDto.setDateNaissance(LocalDate.parse("12-10-2020", formatter));
+        userDto.setSexe("Feminin");
         userDto.setNumTel("+3345455667");
 
 
@@ -63,7 +63,7 @@ public class ConseillerSeeder implements ApplicationListener<ContextRefreshedEve
         user.setEmail(userDto.getEmail());
         user.setAdresse(userDto.getAdresse());
         user.setNumTel(userDto.getNumTel());
-        user.setDateNaissance(userDto.getDateNaissance());
+        user.setSexe(userDto.getSexe());
         user.setMotDePasse(passwordEncoder.encode(userDto.getPassword()));
         user.setRole(optionalRole.get());
         System.out.println(user);

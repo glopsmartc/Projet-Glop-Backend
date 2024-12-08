@@ -35,14 +35,17 @@ public class Utilisateur implements UserDetails {
     @Column(name = "nom", nullable = false, length = 35)
     private String nom;
 
+    @Column(name = "sexe")
+    private String sexe;
+
     @NotBlank(message = "Le prénom est obligatoire") // Must not be null or blank
     @Size(max = 35, message = "Le prénom ne doit pas dépasser 35 caractères")
     @Column(name = "prenom", nullable = false, length = 35)
     private String prenom;
 
-    @NotNull(message = "La date de naissance est obligatoire")
+    //@NotNull(message = "La date de naissance est obligatoire")
     @Past(message = "La date de naissance doit être dans le passé")
-    @Column(name = "date_naissance", nullable = false)
+    @Column(name = "date_naissance")
     private LocalDate dateNaissance;
 
     @NotBlank(message = "L'adresse est obligatoire")
