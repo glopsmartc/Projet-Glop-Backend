@@ -11,6 +11,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -48,7 +49,6 @@ public class ContratServiceImp implements ContratServiceItf {
         contrat.setDateNaissanceSouscripteur(request.getDateNaissanceSouscripteur());
         contrat.setPrice(request.getPrice());
         contrat.setClient(userClientService.getAuthenticatedUser(token).getEmail());
-        contrat.setStatut("actif");
 
         // Convert accompanying persons
         contrat.setAccompagnants(request.getAccompagnants().stream().map(dto -> {
@@ -98,8 +98,8 @@ public class ContratServiceImp implements ContratServiceItf {
             case "3_mois":
                 ajustementPrix = 3.0; // Multiplication par 3 pour 3 mois
                 break;
-            case "4_mois":
-                ajustementPrix = 4.0; // Multiplication par 4 pour 4 mois
+            case "6_mois":
+                ajustementPrix = 6.0; // Multiplication par 6 pour 6 mois
                 break;
             case "1_an":
                 ajustementPrix = 12.0; // Multiplication par 12 pour 1 an
@@ -187,6 +187,21 @@ public class ContratServiceImp implements ContratServiceItf {
         file.transferTo(destinationFile);
         System.out.println("File saved to: " + destinationFile.getAbsolutePath());
     return destinationFile.getAbsolutePath();
+    }
+
+    @Override
+    public List<Offre> getAllOffres() {
+        return (List<Offre>) offreRepository.findAll();
+    }
+
+    @Override
+    public List<Contrat> getAllContrats() {
+        return (List<Contrat>) contratRepository.findAll();
+    }
+
+    @Override
+    public Optional<Contrat> getContratById(Long id) {
+        return contratRepository.findById(id);
     }
 
     @Override

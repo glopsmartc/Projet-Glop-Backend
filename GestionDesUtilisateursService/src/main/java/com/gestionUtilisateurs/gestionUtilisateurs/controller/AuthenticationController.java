@@ -4,10 +4,12 @@ import com.gestionUtilisateurs.gestionUtilisateurs.dto.*;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.Utilisateur;
 import com.gestionUtilisateurs.gestionUtilisateurs.service.AuthServiceItf;
 import com.gestionUtilisateurs.gestionUtilisateurs.service.JwtService;
+import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 
 @RequestMapping("/auth")
@@ -25,14 +27,14 @@ public class AuthenticationController {
     }
 
         @PostMapping("/signup")
-        public ResponseEntity<Utilisateur> register(@RequestBody RegisterUserDto registerUserDto) {
+        public ResponseEntity<Utilisateur> register(@Valid @RequestBody RegisterUserDto registerUserDto) {
             Utilisateur registeredUser = authenticationService.signup(registerUserDto);
 
             return ResponseEntity.ok(registeredUser);
         }
 
         @PostMapping("/login")
-        public ResponseEntity<LoginResponse> authenticate(@RequestBody LoginUserDto loginUserDto) {
+        public ResponseEntity<LoginResponse> authenticate(@Valid @RequestBody LoginUserDto loginUserDto) {
             Utilisateur authenticatedUser = authenticationService.authenticate(loginUserDto);
 
             String jwtToken = jwtService.generateToken(authenticatedUser);
@@ -45,24 +47,30 @@ public class AuthenticationController {
         }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<String> forgotPassword(@RequestBody PasswordResetRequest request) {
+    public ResponseEntity<Map<String, String>> forgotPassword(@Valid @RequestBody PasswordResetRequest request) {
         try {
             authenticationService.initiatePasswordReset(request.getEmail());
-            return ResponseEntity.ok("Email de réinitialisation envoyé.");
+            return ResponseEntity.ok(Map.of("message", "L'email de réinitialisation a été envoyé avec succès."));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Email non valide : " + e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Erreur : " + e.getMessage());
+            return ResponseEntity.internalServerError().body(Map.of("error", "Une erreur inattendue s'est produite."));
         }
     }
+
 
     @PostMapping("/reset-password")
-    public ResponseEntity<String> resetPassword(@RequestBody ResetPasswordRequest request) {
+    public ResponseEntity<Map<String, String>> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
         try {
             authenticationService.resetPassword(request.getToken(), request.getNewPassword());
-            return ResponseEntity.ok("Mot de passe réinitialisé avec succès.");
+            // Retourne un objet JSON correctement formaté
+            return ResponseEntity.ok(Map.of("message", "Mot de passe réinitialisé avec succès."));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", "Requête non valide : " + e.getMessage()));
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Erreur : " + e.getMessage());
+            return ResponseEntity.internalServerError().body(Map.of("error", "Une erreur inattendue s'est produite."));
         }
-
     }
+
 
 }
