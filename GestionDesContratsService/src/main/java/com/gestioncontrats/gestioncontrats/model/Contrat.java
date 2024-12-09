@@ -22,6 +22,7 @@ public class Contrat {
     private Long id;
 
     private String dureeContrat;
+    private String statut;
     private boolean assurerTransport;
     private boolean assurerPersonnes;
     private boolean voiture;
@@ -39,7 +40,7 @@ public class Contrat {
 
     private String price;
 
-    private String client;
+    private String client; //email
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "contrat_id")
