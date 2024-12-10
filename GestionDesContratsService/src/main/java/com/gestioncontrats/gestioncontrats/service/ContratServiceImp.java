@@ -75,8 +75,6 @@ public class ContratServiceImp implements ContratServiceItf {
         // Set the PDF path in the saved contract
         savedContrat.setPdfPath(pdfPath);
 
-        userClientService.setDateNaissance(token, request.getDateNaissanceSouscripteur(), userClientService.getAuthenticatedUser(token).getEmail() );
-
         // Return the contract with the PDF path saved
         return contratRepository.save(savedContrat);
     }
@@ -205,4 +203,10 @@ public class ContratServiceImp implements ContratServiceItf {
     public Optional<Contrat> getContratById(Long id) {
         return contratRepository.findById(id);
     }
+
+    @Override
+    public List<Contrat> getContratsByClientEmail(String email) {
+        return contratRepository.findByClient(email);
+    }
+
 }
