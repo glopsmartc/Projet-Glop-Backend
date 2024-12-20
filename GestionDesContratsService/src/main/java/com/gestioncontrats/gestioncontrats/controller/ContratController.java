@@ -10,6 +10,8 @@ import com.gestioncontrats.gestioncontrats.model.Contrat;
 import com.gestioncontrats.gestioncontrats.model.Offre;
 import com.gestioncontrats.gestioncontrats.model.OffreRepository;
 import com.gestioncontrats.gestioncontrats.service.ContratServiceItf;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -17,6 +19,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -27,20 +30,19 @@ import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 @RequestMapping("/api/contrat")
 @RestController
 public class ContratController {
+    private static final Logger log = LoggerFactory.getLogger(ContratController.class);
     private final ContratServiceItf contratService;
 
-    private final OffreRepository offreRepository;
 
     private final UserClientService utilisateurService;
 
-    public ContratController(ContratServiceItf contratService, OffreRepository offreRepository, UserClientService utilisateurService) {
+    public ContratController(ContratServiceItf contratService, UserClientService utilisateurService) {
         this.contratService = contratService;
-        this.offreRepository = offreRepository;
         this.utilisateurService = utilisateurService;
     }
 
     @PostMapping( value="/create", consumes = {MULTIPART_FORM_DATA_VALUE, "application/json"})
-    //@PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<?> createContract(@RequestHeader("Authorization") String authorizationHeader, @RequestPart("request") String requestJson, @RequestPart(value = "file") MultipartFile pdfFile) throws IOException {
         String token = authorizationHeader.replace("Bearer ", "");
 
@@ -49,8 +51,8 @@ public class ContratController {
         mapper.registerModule(new JavaTimeModule());
         CreateContractRequest request = mapper.readValue(requestJson, CreateContractRequest.class);
 
-        System.out.println("Received Content-Type: " + pdfFile.getContentType());
-        System.out.println("Request Details: " + request);
+        log.info("Received Content-Type: " + pdfFile.getContentType());
+        log.info("Request Details: " + request);
         
         if (!pdfFile.getContentType().equals("application/pdf")) {
             return ResponseEntity.badRequest().body("Le fichier doit être un PDF.");
@@ -74,23 +76,36 @@ public class ContratController {
         OffreResponse response = contratService.buildOffreResponse(offreCorrespondante, request);
         return ResponseEntity.ok(response);
     }
-
-    @GetMapping("/")
-    //@PreAuthorize("hasRole('CLIENT')")
+    @GetMapping("/allOffers")
+    @PreAuthorize("hasRole('CONSEILLER')")
     public ResponseEntity<List<Offre>> allOffres() {
-        List<Offre> offres = new ArrayList<>();
-        System.out.println("Entered allOffres method");
-
-        offreRepository.findAll().forEach(offres::add);
+        log.info("Entered allOffres method");
+        List<Offre> offres = contratService.getAllOffres();
 
         if (offres.isEmpty()) {
-            System.out.println("No offers found.");
+            log.warn("No offers found.");
         } else {
-            System.out.println("Found offers: " + offres);
+            log.info("Found offers: {}", offres);
         }
 
         return ResponseEntity.ok(offres);
     }
+
+    @GetMapping("/")
+    @PreAuthorize("hasRole('CONSEILLER')")
+    public ResponseEntity<List<Contrat>> allContrats() {
+        log.info("Entered allContrats method");
+        List<Contrat> contrats = contratService.getAllContrats();
+
+        if (contrats.isEmpty()) {
+            log.warn("No contracts found.");
+        } else {
+            log.info("Found contracts: {}", contrats);
+        }
+
+        return ResponseEntity.ok(contrats);
+    }
+
 
     @GetMapping("/current")
     public ResponseEntity<String> getCurrentContract() {
@@ -108,4 +123,39 @@ public class ContratController {
 
         return utilisateurService.getAuthenticatedUser(token);
     }
+
+    @GetMapping("/{id}")
+    //@PreAuthorize("hasRole('CONSEILLER')")
+    public ResponseEntity<Contrat> getContratById(@PathVariable Long id) {
+        log.info("Fetching contract with ID: {}", id);
+        return contratService.getContratById(id)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> {
+                    log.warn("Contract with ID {} not found.", id);
+                    return new ResponseStatusException(HttpStatus.NOT_FOUND, "Contrat non trouvé.");
+                });
+    }
+
+
+    @GetMapping("/user-contracts")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<List<Contrat>> getUserContracts(@RequestHeader("Authorization") String authorizationHeader) {
+        // Extraction du token
+        String token = authorizationHeader.replace("Bearer ", "");
+        // Récupération de l'email à partir du token
+        String clientEmail = utilisateurService.getAuthenticatedUser(token).getEmail();
+
+        // Récupération des contrats
+        List<Contrat> contrats = contratService.getContratsByClientEmail(clientEmail);
+
+        // Log pour vérifier les contrats récupérés
+        System.out.println("Contrats récupérés pour l'email " + clientEmail + ": " + contrats);
+
+        // Retourner les contrats ou un statut 404 si aucun n'est trouvé
+        if (contrats.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.ok(contrats);
+    }
+
 }

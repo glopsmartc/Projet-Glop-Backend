@@ -6,9 +6,11 @@ import com.gestionUtilisateurs.gestionUtilisateurs.model.UtilisateurRepository;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.Role;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.RoleEnum;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.RoleRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -48,11 +50,24 @@ public class UserServiceImp implements UserServiceItf {
         user.setEmail(input.getEmail());
         user.setAdresse(input.getAdresse());
         user.setNumTel(input.getNumTel());
-        user.setDateNaissance(input.getDateNaissance());
+        user.setSexe(input.getSexe());
+        //user.setDateNaissance(input.getDateNaissance());
         user.setMotDePasse(passwordEncoder.encode(input.getPassword()));
         user.setRole(optionalRole.get());
         System.out.println(user);
 
         return userRepository.save(user);
     }
+
+    @Override
+    public void updateDateNaissance(String email, LocalDate dateNaissance) {
+        Utilisateur utilisateur = userRepository.findByEmail(email)
+                .orElseThrow(() -> new IllegalArgumentException("Utilisateur non trouvé pour l'email : " + email));
+
+        utilisateur.setDateNaissance(dateNaissance);
+
+        userRepository.save(utilisateur);
+    }
+
+
 }
