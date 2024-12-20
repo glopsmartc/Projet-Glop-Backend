@@ -50,11 +50,11 @@ class UserServiceImpTest {
         conseillerRole.setName(RoleEnum.CONSEILLER);
 
         Utilisateur savedUser = new Utilisateur();
-        savedUser.setRole(conseillerRole); // Attribuer le rôle au mock d'utilisateur
+        savedUser.setRole(conseillerRole);
 
         when(roleRepository.findByName(RoleEnum.CONSEILLER)).thenReturn(Optional.of(conseillerRole));
         when(passwordEncoder.encode(registerDto.getPassword())).thenReturn("encodedPassword");
-        when(userRepository.save(any(Utilisateur.class))).thenReturn(savedUser); // Retourner l'utilisateur avec le rôle
+        when(userRepository.save(any(Utilisateur.class))).thenReturn(savedUser);
 
         Utilisateur result = userService.createConseiller(registerDto);
 
