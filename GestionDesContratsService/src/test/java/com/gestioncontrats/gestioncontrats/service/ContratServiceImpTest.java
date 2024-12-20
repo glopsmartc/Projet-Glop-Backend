@@ -1,9 +1,11 @@
 package com.gestioncontrats.gestioncontrats.service;
-
 import com.gestioncontrats.gestioncontrats.config.UserClientService;
 import com.gestioncontrats.gestioncontrats.dto.AccompagnantDto;
 import com.gestioncontrats.gestioncontrats.dto.CreateContractRequest;
+import com.gestioncontrats.gestioncontrats.dto.OffreResponse;
 import com.gestioncontrats.gestioncontrats.dto.UtilisateurDTO;
+import com.gestioncontrats.gestioncontrats.model.Contrat;
+import com.gestioncontrats.gestioncontrats.model.ContratRepository;
 import com.gestioncontrats.gestioncontrats.model.Offre;
 import com.gestioncontrats.gestioncontrats.model.OffreRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -11,15 +13,24 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import org.springframework.web.multipart.MultipartFile;
+import static org.mockito.Mockito.*;
+
+import java.io.File;
+import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 class ContratServiceImpTest {
+
+    @Mock
+    private ContratRepository contratRepository;
 
     @Mock
     private UserClientService userClientService;
@@ -98,5 +109,176 @@ class ContratServiceImpTest {
         Offre result = contratServiceImp.findMatchingOffre(request);
 
         assertEquals(null, result);
+    }
+
+    @Test
+    void testCreateContract_invalidOffre() {
+        CreateContractRequest request = new CreateContractRequest();
+        request.setAssurerTransport(true);
+        request.setAssurerPersonnes(true);
+        request.setAccompagnants(new ArrayList<>());
+
+        when(offreRepository.findByNomOffre(anyString())).thenReturn(null);
+
+        UtilisateurDTO utilisateurDTO = new UtilisateurDTO();
+        utilisateurDTO.setEmail("test@example.com");
+        when(userClientService.getAuthenticatedUser(anyString())).thenReturn(utilisateurDTO);
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> contratServiceImp.createContract(request, null, "valid-token")
+        );
+
+        assertEquals("Aucune offre correspondante trouvée.", exception.getMessage());
+    }
+
+
+
+    @Test
+    void testFindMatchingOffre_noOfferMatches() {
+        CreateContractRequest request = new CreateContractRequest();
+        request.setAssurerTransport(true);
+
+        Offre nonMatchingOffre = new Offre();
+        nonMatchingOffre.setNomOffre("OffreSansMoyTra");
+
+        when(offreRepository.findAll()).thenReturn(List.of(nonMatchingOffre));
+
+        Offre result = contratServiceImp.findMatchingOffre(request);
+
+        assertNull(result);
+    }
+    @Test
+    void testGetContratById_found() {
+        Contrat contrat = new Contrat();
+        contrat.setId(1L);
+        when(contratRepository.findById(1L)).thenReturn(Optional.of(contrat));
+
+        Optional<Contrat> result = contratServiceImp.getContratById(1L);
+
+        assertTrue(result.isPresent());
+        assertEquals(1L, result.get().getId());
+    }
+
+
+    @Test
+    void testFindMatchingOffre_withAssuranceTransport() {
+        CreateContractRequest request = new CreateContractRequest();
+        request.setAssurerTransport(true);
+
+        Offre matchingOffre = new Offre();
+        matchingOffre.setNomOffre("AvecMoyTra");
+        when(offreRepository.findAll()).thenReturn(List.of(matchingOffre));
+
+        Offre result = contratServiceImp.findMatchingOffre(request);
+
+        assertNotNull(result);
+        assertEquals(matchingOffre, result);
+    }
+
+
+
+    @Test
+    void testParsePrix() throws Exception {
+        CreateContractRequest request = new CreateContractRequest();
+        request.setNombrePersonnes(2);
+
+        Offre offre = new Offre();
+        offre.setPrixMin("50€/personneAccompagnante");
+
+        Method parsePrixMethod = ContratServiceImp.class.getDeclaredMethod("parsePrix", String.class, int.class);
+        parsePrixMethod.setAccessible(true);
+
+        double prix = (double) parsePrixMethod.invoke(contratServiceImp, offre.getPrixMin(), request.getNombrePersonnes());
+
+        assertEquals(100.0, prix);
+    }
+
+
+    @Test
+    void testSavePdfFile() throws IOException, NoSuchFieldException, IllegalAccessException {
+        MultipartFile file = mock(MultipartFile.class);
+        when(file.getOriginalFilename()).thenReturn("test.pdf");
+
+        Field storagePathField = ContratServiceImp.class.getDeclaredField("storagePath");
+        storagePathField.setAccessible(true);
+
+        storagePathField.set(contratServiceImp, "${user.home}/Documents/storage");
+
+        String result = contratServiceImp.savePdfFile(file, 1L);
+
+        assertTrue(result.contains("1_test.pdf"));
+    }
+
+    @Test
+    void testGetContratById_noFound() {
+        when(contratRepository.findById(999L)).thenReturn(Optional.empty());
+
+        Optional<Contrat> result = contratServiceImp.getContratById(999L);
+
+        assertFalse(result.isPresent());
+    }
+
+    @Test
+    void testBuildOffreResponse_withDifferentDurations() {
+        Locale.setDefault(Locale.US);
+
+        CreateContractRequest request = new CreateContractRequest();
+        request.setDureeContrat("3_mois");
+
+        Offre offre = new Offre();
+        offre.setPrixMin("100€/personneAccompagnante");
+        offre.setPrixMax("150€/personneAccompagnante");
+
+        OffreResponse response = contratServiceImp.buildOffreResponse(offre, request);
+
+        assertEquals("300.00€", response.getPrixMinTotal());
+        assertEquals("450.00€", response.getPrixMaxTotal());
+    }
+
+    @Test
+    void testParsePrix_withPersonneAccompagnante() throws Exception {
+        CreateContractRequest request = new CreateContractRequest();
+        request.setNombrePersonnes(3);
+
+        Offre offre = new Offre();
+        offre.setPrixMin("50€/personneAccompagnante");
+
+        Method method = ContratServiceImp.class.getDeclaredMethod("parsePrix", String.class, int.class);
+        method.setAccessible(true);
+
+        double prix = (double) method.invoke(contratServiceImp, offre.getPrixMin(), request.getNombrePersonnes());
+        assertEquals(150.0, prix);
+    }
+
+    @Test
+    void testParsePrix_withoutPersonneAccompagnante() throws Exception {
+        CreateContractRequest request = new CreateContractRequest();
+        request.setNombrePersonnes(1);
+
+        Offre offre = new Offre();
+        offre.setPrixMin("100€");
+
+        Method method = ContratServiceImp.class.getDeclaredMethod("parsePrix", String.class, int.class);
+        method.setAccessible(true);
+
+        double prix = (double) method.invoke(contratServiceImp, offre.getPrixMin(), request.getNombrePersonnes());
+        assertEquals(100.0, prix);
+    }
+    @Test
+    void testBuildOffreResponse_invalidDuration() {
+        CreateContractRequest request = new CreateContractRequest();
+        request.setDureeContrat("invalid_duration");
+
+        Offre offre = new Offre();
+        offre.setPrixMin("100€/personneAccompagnante");
+        offre.setPrixMax("150€/personneAccompagnante");
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> contratServiceImp.buildOffreResponse(offre, request)
+        );
+
+        assertEquals("Durée du contrat invalide", exception.getMessage());
     }
 }
