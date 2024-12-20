@@ -49,7 +49,6 @@ class AuthServiceImpTest {
 
     @Test
     public void testSignupSuccess() {
-        // Préparer les données du test
         RegisterUserDto registerUserDto = new RegisterUserDto();
         registerUserDto.setNom("John");
         registerUserDto.setPrenom("Doe");
