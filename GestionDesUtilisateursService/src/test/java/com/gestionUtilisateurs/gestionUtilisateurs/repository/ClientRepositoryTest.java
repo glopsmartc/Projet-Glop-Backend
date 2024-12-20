@@ -1,24 +1,23 @@
 package com.gestionUtilisateurs.gestionUtilisateurs.repository;
 
-
 import com.gestionUtilisateurs.gestionUtilisateurs.model.Client;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.ClientRepository;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.RoleRepository;
 import jakarta.validation.ConstraintViolationException;
 
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.junit.jupiter.api.extension.ExtendWith;
 
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class ClientRepositoryTest {
 
     @Autowired
@@ -26,10 +25,9 @@ public class ClientRepositoryTest {
     @Autowired
     private RoleRepository roleRepository;
 
-
     private Client client;
 
-    @Before
+    @BeforeEach
     public void setUp() {
         client = new Client();
         client.setNumTel("0123456789");
