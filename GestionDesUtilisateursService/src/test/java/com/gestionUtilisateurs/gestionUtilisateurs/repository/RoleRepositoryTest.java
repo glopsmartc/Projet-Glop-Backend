@@ -1,5 +1,6 @@
 package com.gestionUtilisateurs.gestionUtilisateurs.repository;
 
+import com.gestionUtilisateurs.gestionUtilisateurs.GestionDesUtilisateursServiceApplication;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.Role;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.RoleEnum;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.RoleRepository;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.jdbc.Sql;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -16,8 +18,8 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@ExtendWith(SpringExtension.class)
+@SpringBootTest(classes = GestionDesUtilisateursServiceApplication.class)
+@ActiveProfiles("test")
 class RoleRepositoryTest {
 
     @Autowired
@@ -47,7 +49,7 @@ class RoleRepositoryTest {
 
         assertThat(foundRole).isPresent();
         assertThat(foundRole.get().getName()).isEqualTo(RoleEnum.USER);
-        assertThat(foundRole.get().getDescription()).isEqualTo("Role for regular users");
+        assertThat(foundRole.get().getDescription()).isEqualTo("Default user role");
     }
 
     @Test
@@ -65,6 +67,7 @@ class RoleRepositoryTest {
     }
 
     @Test
+    @Sql(scripts = "/reset_roles.sql", executionPhase = Sql.ExecutionPhase.BEFORE_TEST_METHOD)
     void testRoleNotFound() {
         Optional<Role> foundRole = roleRepository.findByName(RoleEnum.LOGISTICIEN);
 

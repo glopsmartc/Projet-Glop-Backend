@@ -1,5 +1,6 @@
 package com.gestionUtilisateurs.gestionUtilisateurs.repository;
 
+import com.gestionUtilisateurs.gestionUtilisateurs.GestionDesUtilisateursServiceApplication;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.Client;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.ClientRepository;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.RoleRepository;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.junit.jupiter.api.extension.ExtendWith;
 
@@ -16,8 +18,8 @@ import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@SpringBootTest
-@ExtendWith(SpringExtension.class)
+@SpringBootTest(classes = GestionDesUtilisateursServiceApplication.class)
+@ActiveProfiles("test")
 public class ClientRepositoryTest {
 
     @Autowired
