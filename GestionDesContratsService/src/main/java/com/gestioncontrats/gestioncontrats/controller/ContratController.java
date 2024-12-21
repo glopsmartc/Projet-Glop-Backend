@@ -33,6 +33,7 @@ public class ContratController {
     private static final Logger log = LoggerFactory.getLogger(ContratController.class);
     private final ContratServiceItf contratService;
 
+
     private final UserClientService utilisateurService;
 
     public ContratController(ContratServiceItf contratService, UserClientService utilisateurService) {
@@ -136,5 +137,25 @@ public class ContratController {
     }
 
 
+    @GetMapping("/user-contracts")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<List<Contrat>> getUserContracts(@RequestHeader("Authorization") String authorizationHeader) {
+        // Extraction du token
+        String token = authorizationHeader.replace("Bearer ", "");
+        // Récupération de l'email à partir du token
+        String clientEmail = utilisateurService.getAuthenticatedUser(token).getEmail();
+
+        // Récupération des contrats
+        List<Contrat> contrats = contratService.getContratsByClientEmail(clientEmail);
+
+        // Log pour vérifier les contrats récupérés
+        System.out.println("Contrats récupérés pour l'email " + clientEmail + ": " + contrats);
+
+        // Retourner les contrats ou un statut 404 si aucun n'est trouvé
+        if (contrats.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
+        }
+        return ResponseEntity.ok(contrats);
+    }
 
 }

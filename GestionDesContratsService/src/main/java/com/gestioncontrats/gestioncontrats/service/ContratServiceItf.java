@@ -22,4 +22,6 @@ public interface ContratServiceItf {
     List<Contrat> getAllContrats();
 
     Optional<Contrat> getContratById(Long id);
+
+    List<Contrat> getContratsByClientEmail(String email);
 }
