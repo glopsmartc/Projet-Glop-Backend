@@ -4,10 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gestioncontrats.gestioncontrats.config.UserClientService;
 import com.gestioncontrats.gestioncontrats.dto.CreateContractRequest;
 import com.gestioncontrats.gestioncontrats.dto.OffreResponse;
+import com.gestioncontrats.gestioncontrats.dto.UtilisateurDTO;
 import com.gestioncontrats.gestioncontrats.model.Contrat;
 import com.gestioncontrats.gestioncontrats.model.Offre;
 import com.gestioncontrats.gestioncontrats.model.OffreRepository;
 import com.gestioncontrats.gestioncontrats.service.ContratServiceItf;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -17,11 +19,16 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
@@ -46,25 +53,20 @@ class ContratControllerTest {
 
     @Test
     void testCreateContract_withMatchingOffre() throws IOException, IOException {
-        // Mock des objets nécessaires
         Contrat contrat = new Contrat();
         Offre offre = new Offre();
         contrat.setOffre(offre);
 
-        // Création d'un fichier PDF simulé
         MultipartFile pdfFile = Mockito.mock(MultipartFile.class);
         when(pdfFile.getContentType()).thenReturn("application/pdf");
 
-        // Simulation du service
         when(contratService.createContract(any(CreateContractRequest.class), eq(pdfFile), anyString())).thenReturn(contrat);
 
         CreateContractRequest request = new CreateContractRequest();
         String authorizationHeader = "Bearer fake_token";
 
-        // Appel du contrôleur
         ResponseEntity<?> response = contratController.createContract(authorizationHeader, "{}", pdfFile);
 
-        // Vérifications
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
         assertEquals(contrat, response.getBody());
     }
@@ -72,28 +74,21 @@ class ContratControllerTest {
 
     @Test
     void testCreateContract_noMatchingOffre() throws IOException {
-        // Créer un contrat sans offre
         Contrat contrat = new Contrat();
         contrat.setOffre(null);
 
-        // Simulation du comportement du service
         when(contratService.createContract(any(CreateContractRequest.class), any(MultipartFile.class), any(String.class)))
                 .thenReturn(contrat);
 
-        // Créer un objet CreateContractRequest
         CreateContractRequest request = new CreateContractRequest();
-        String requestJson = new ObjectMapper().writeValueAsString(request); // Convertir en JSON
+        String requestJson = new ObjectMapper().writeValueAsString(request);
 
-        // Créer un fichier PDF simulé
         MultipartFile pdfFile = new MockMultipartFile("file", "dummy.pdf", "application/pdf", new byte[0]);
 
-        // Simuler l'en-tête Authorization
         String authorizationHeader = "Bearer dummy-token";
 
-        // Appeler la méthode createContract avec les bons paramètres
         ResponseEntity<?> response = contratController.createContract(authorizationHeader, requestJson, pdfFile);
 
-        // Vérifier que la réponse est une mauvaise demande (BAD_REQUEST)
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Aucune offre correspondante trouvée.", response.getBody());
     }
@@ -125,4 +120,95 @@ class ContratControllerTest {
         assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
         assertEquals("Aucune offre correspondante trouvée.", response.getBody());
     }
+
+    @Test
+    void testAllOffres() {
+        List<Offre> offres = new ArrayList<>();
+        offres.add(new Offre());
+
+        when(contratService.getAllOffres()).thenReturn(offres);
+
+        ResponseEntity<List<Offre>> response = contratController.allOffres();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(1, response.getBody().size());
+    }
+
+    @Test
+    void testAllContrats() {
+        List<Contrat> contrats = new ArrayList<>();
+        contrats.add(new Contrat());
+
+        when(contratService.getAllContrats()).thenReturn(contrats);
+
+        ResponseEntity<List<Contrat>> response = contratController.allContrats();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(1, response.getBody().size());
+    }
+
+    @Test
+    void testGetContratById_found() {
+        Contrat contrat = new Contrat();
+        contrat.setId(1L);
+
+        when(contratService.getContratById(1L)).thenReturn(java.util.Optional.of(contrat));
+
+        ResponseEntity<Contrat> response = contratController.getContratById(1L);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(contrat, response.getBody());
+    }
+
+    @Test
+    void testGetContratById_notFound() {
+        when(contratService.getContratById(1L)).thenReturn(java.util.Optional.empty());
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            contratController.getContratById(1L);
+        });
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Contrat non trouvé.", exception.getReason());
+    }
+
+    @Test
+    void testGetCurrentContract_notAuthenticated() {
+        SecurityContextHolder.clearContext();
+
+        ResponseEntity<String> response = contratController.getCurrentContract();
+
+        assertEquals(HttpStatus.FORBIDDEN, response.getStatusCode());
+        assertEquals("Accès refusé.", response.getBody());
+    }
+
+    @Test
+    void testGetUserContracts_found() {
+        UtilisateurDTO utilisateurDTO = new UtilisateurDTO();
+        utilisateurDTO.setEmail("client@example.com");
+
+        List<Contrat> contrats = new ArrayList<>();
+        contrats.add(new Contrat());
+
+        when(utilisateurService.getAuthenticatedUser(anyString())).thenReturn(utilisateurDTO);
+        when(contratService.getContratsByClientEmail("client@example.com")).thenReturn(contrats);
+
+        ResponseEntity<List<Contrat>> response = contratController.getUserContracts("Bearer token");
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(1, response.getBody().size());
+    }
+
+    @Test
+    void testGetUserContracts_notFound() {
+        when(utilisateurService.getAuthenticatedUser(anyString())).thenReturn(new UtilisateurDTO());
+        when(contratService.getContratsByClientEmail(anyString())).thenReturn(new ArrayList<>());
+
+        ResponseEntity<List<Contrat>> response = contratController.getUserContracts("Bearer token");
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+    }
+
+
+
 }

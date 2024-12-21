@@ -16,11 +16,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 class UtilisateurControllerTest {
@@ -54,7 +54,6 @@ class UtilisateurControllerTest {
         mockUser.setPrenom("Test");
         mockUser.setNom("User");
 
-        // Mock the security context and authentication
         when(securityContext.getAuthentication()).thenReturn(authentication);
         when(authentication.getPrincipal()).thenReturn(mockUser);
 
@@ -79,5 +78,57 @@ class UtilisateurControllerTest {
         ResponseEntity<List<Utilisateur>> response = utilisateurController.allUsers();
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(mockUsers, response.getBody());
+    }
+
+    @Test
+    void testSetDateNaissance_validData() {
+        String email = "user@example.com";
+        LocalDate dateNaissance = LocalDate.of(1990, 1, 1);
+
+        ResponseEntity<String> response = utilisateurController.setDateNaissance(email, dateNaissance);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Date de naissance mise à jour avec succès.", response.getBody());
+
+        verify(userService, times(1)).updateDateNaissance(email, dateNaissance);
+    }
+
+    @Test
+    void testSetDateNaissance_missingEmail() {
+        LocalDate dateNaissance = LocalDate.of(1990, 1, 1);
+
+        ResponseEntity<String> response = utilisateurController.setDateNaissance(null, dateNaissance);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Email ou date de naissance manquants.", response.getBody());
+
+        verify(userService, times(0)).updateDateNaissance(any(), any());
+    }
+
+    @Test
+    void testSetDateNaissance_missingDateNaissance() {
+        String email = "user@example.com";
+
+        ResponseEntity<String> response = utilisateurController.setDateNaissance(email, null);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Email ou date de naissance manquants.", response.getBody());
+
+        verify(userService, times(0)).updateDateNaissance(any(), any());
+    }
+
+    @Test
+    void testSetDateNaissance_serviceException() {
+        String email = "user@example.com";
+        LocalDate dateNaissance = LocalDate.of(1990, 1, 1);
+
+        doThrow(new RuntimeException("Erreur interne")).when(userService).updateDateNaissance(email, dateNaissance);
+
+        ResponseEntity<String> response = utilisateurController.setDateNaissance(email, dateNaissance);
+
+        assertEquals(HttpStatus.INTERNAL_SERVER_ERROR, response.getStatusCode());
+        assertTrue(response.getBody().contains("Erreur lors de la mise à jour de la date de naissance"));
+
+        verify(userService, times(1)).updateDateNaissance(email, dateNaissance);
     }
 }
