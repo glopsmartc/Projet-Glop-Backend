@@ -49,7 +49,7 @@ class RoleRepositoryTest {
 
         assertThat(foundRole).isPresent();
         assertThat(foundRole.get().getName()).isEqualTo(RoleEnum.USER);
-        assertThat(foundRole.get().getDescription()).isEqualTo("Default user role");
+        assertThat(foundRole.get().getDescription()).isEqualTo("Role for regular users");
     }
 
     @Test
