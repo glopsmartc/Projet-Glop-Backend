@@ -7,9 +7,7 @@ import com.gestioncontrats.gestioncontrats.dto.OffreResponse;
 import com.gestioncontrats.gestioncontrats.dto.UtilisateurDTO;
 import com.gestioncontrats.gestioncontrats.model.Contrat;
 import com.gestioncontrats.gestioncontrats.model.Offre;
-import com.gestioncontrats.gestioncontrats.model.OffreRepository;
 import com.gestioncontrats.gestioncontrats.service.ContratServiceItf;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -38,9 +36,6 @@ class ContratControllerTest {
     private ContratServiceItf contratService;
 
     @Mock
-    private OffreRepository offreRepository;
-
-    @Mock
     private UserClientService utilisateurService;
 
     @InjectMocks
@@ -52,7 +47,7 @@ class ContratControllerTest {
     }
 
     @Test
-    void testCreateContract_withMatchingOffre() throws IOException, IOException {
+    void testCreateContract_withMatchingOffre() throws IOException {
         Contrat contrat = new Contrat();
         Offre offre = new Offre();
         contrat.setOffre(offre);
@@ -62,7 +57,6 @@ class ContratControllerTest {
 
         when(contratService.createContract(any(CreateContractRequest.class), eq(pdfFile), anyString())).thenReturn(contrat);
 
-        CreateContractRequest request = new CreateContractRequest();
         String authorizationHeader = "Bearer fake_token";
 
         ResponseEntity<?> response = contratController.createContract(authorizationHeader, "{}", pdfFile);
@@ -209,6 +203,64 @@ class ContratControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
+    @Test
+    void testGetCurrentUser() {
+        UtilisateurDTO utilisateurDTO = new UtilisateurDTO();
+        utilisateurDTO.setEmail("client@example.com");
+
+        when(utilisateurService.getAuthenticatedUser(anyString())).thenReturn(utilisateurDTO);
+
+        String authorizationHeader = "Bearer dummy-token";
+
+        UtilisateurDTO response = contratController.getCurrentUser(authorizationHeader);
+
+        assertEquals("client@example.com", response.getEmail());
+    }
+
+    @Test
+    void testGetContratById_invalidId() {
+        when(contratService.getContratById(anyLong())).thenReturn(java.util.Optional.empty());
+
+        ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
+            contratController.getContratById(999L); // Invalid ID
+        });
+
+        assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
+        assertEquals("Contrat non trouvé.", exception.getReason());
+    }
+
+    @Test
+    void testAllOffres_noOffersFound() {
+        List<Offre> offres = new ArrayList<>();
+        when(contratService.getAllOffres()).thenReturn(offres);
+
+        ResponseEntity<List<Offre>> response = contratController.allOffres();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(0, response.getBody().size());
+    }
+
+    @Test
+    void testGetOffreCorrespondante_withNoMatchingOffre() {
+        when(contratService.findMatchingOffre(any(CreateContractRequest.class))).thenReturn(null);
+
+        CreateContractRequest request = new CreateContractRequest();
+        ResponseEntity<?> response = contratController.getOffreCorrespondante(request);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Aucune offre correspondante trouvée.", response.getBody());
+    }
+
+    @Test
+    void testAllContrats_noContratsFound() {
+        List<Contrat> contrats = new ArrayList<>();
+        when(contratService.getAllContrats()).thenReturn(contrats);
+
+        ResponseEntity<List<Contrat>> response = contratController.allContrats();
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals(0, response.getBody().size());
+    }
 
 
 }
