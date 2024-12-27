@@ -10,6 +10,8 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -168,25 +170,28 @@ public class ContratServiceImp implements ContratServiceItf {
 
     // sauvegarder le pdf sur le disque
     public String savePdfFile(MultipartFile file, Long id) throws IOException {
-        // Get the user's Documents directory
-        // String documentsPath = System.getProperty("user.home") + File.separator + "Documents";
-
-        // Créer le nom de fichier avec l'ID du contrat
+        // Create the filename with the contract ID and the original file name
         String fileName = id + "_" + file.getOriginalFilename();
 
-        // Ensure the directory exists
         File directory = new File(storagePath);
         if (!directory.exists()) {
             directory.mkdirs();
         }
 
-        // Create the full file path
-        File destinationFile = new File(storagePath + File.separator + fileName);
+        Path filePath = Paths.get(storagePath, fileName).normalize();
+
+        Path targetPath = Paths.get(storagePath).toAbsolutePath().normalize();
+        if (!filePath.startsWith(targetPath)) {
+            throw new IOException("Invalid file path. Path traversal is not allowed.");
+        }
+
+        File destinationFile = filePath.toFile();
 
         // Save the file
         file.transferTo(destinationFile);
         System.out.println("File saved to: " + destinationFile.getAbsolutePath());
-    return destinationFile.getAbsolutePath();
+
+        return destinationFile.getAbsolutePath();
     }
 
     @Override

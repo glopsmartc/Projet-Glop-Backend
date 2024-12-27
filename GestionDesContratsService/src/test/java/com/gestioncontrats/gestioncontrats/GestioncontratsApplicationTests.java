@@ -12,4 +12,8 @@ class GestioncontratsApplicationTests {
 	void contextLoads() {
 	}
 
+	@Test
+	void mainMethodTest() {
+		GestioncontratsApplication.main(new String[]{});
+	}
 }

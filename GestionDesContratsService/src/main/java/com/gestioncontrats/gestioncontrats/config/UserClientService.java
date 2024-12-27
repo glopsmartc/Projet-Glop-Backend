@@ -11,8 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.LocalDate;
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class UserClientService {
@@ -20,7 +18,7 @@ public class UserClientService {
     private final RestTemplate restTemplate;
 
     @Value("${utilisateur.service.url}")
-    private String utilisateurServiceUrl;
+    String utilisateurServiceUrl;
 
     @Autowired
     public UserClientService(RestTemplate restTemplate) {

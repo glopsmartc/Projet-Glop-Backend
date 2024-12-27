@@ -16,16 +16,13 @@ import org.mockito.MockitoAnnotations;
 import org.springframework.web.multipart.MultipartFile;
 import static org.mockito.Mockito.*;
 
-import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.*;
 
 class ContratServiceImpTest {
 
@@ -200,15 +197,18 @@ class ContratServiceImpTest {
         MultipartFile file = mock(MultipartFile.class);
         when(file.getOriginalFilename()).thenReturn("test.pdf");
 
+        String safeStoragePath = System.getProperty("user.home") + "/Documents/storage";
+
         Field storagePathField = ContratServiceImp.class.getDeclaredField("storagePath");
         storagePathField.setAccessible(true);
 
-        storagePathField.set(contratServiceImp, "${user.home}/Documents/storage");
+        storagePathField.set(contratServiceImp, safeStoragePath);
 
         String result = contratServiceImp.savePdfFile(file, 1L);
 
         assertTrue(result.contains("1_test.pdf"));
     }
+
 
     @Test
     void testGetContratById_noFound() {
@@ -281,4 +281,64 @@ class ContratServiceImpTest {
 
         assertEquals("Durée du contrat invalide", exception.getMessage());
     }
+
+    @Test
+    void testGetAllOffres() {
+        // Création d'une liste d'offres simulées
+        Offre offre1 = new Offre();
+        offre1.setNomOffre("Offre1");
+        Offre offre2 = new Offre();
+        offre2.setNomOffre("Offre2");
+
+        when(offreRepository.findAll()).thenReturn(List.of(offre1, offre2));
+
+        List<Offre> result = contratServiceImp.getAllOffres();
+
+        // Vérification des résultats
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals("Offre1", result.get(0).getNomOffre());
+        assertEquals("Offre2", result.get(1).getNomOffre());
+    }
+
+    @Test
+    void testGetAllContrats() {
+        // Création d'une liste de contrats simulés
+        Contrat contrat1 = new Contrat();
+        contrat1.setId(1L);
+        Contrat contrat2 = new Contrat();
+        contrat2.setId(2L);
+
+        when(contratRepository.findAll()).thenReturn(List.of(contrat1, contrat2));
+
+        List<Contrat> result = contratServiceImp.getAllContrats();
+
+        // Vérification des résultats
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals(1L, result.get(0).getId());
+        assertEquals(2L, result.get(1).getId());
+    }
+
+    @Test
+    void testGetContratsByClientEmail() {
+        // Création d'un contrat simulé
+        Contrat contrat1 = new Contrat();
+        contrat1.setClient("test@example.com");
+        Contrat contrat2 = new Contrat();
+        contrat2.setClient("test@example.com");
+
+        when(contratRepository.findByClient("test@example.com")).thenReturn(List.of(contrat1, contrat2));
+
+        List<Contrat> result = contratServiceImp.getContratsByClientEmail("test@example.com");
+
+        // Vérification des résultats
+        assertNotNull(result);
+        assertEquals(2, result.size());
+        assertEquals("test@example.com", result.get(0).getClient());
+        assertEquals("test@example.com", result.get(1).getClient());
+    }
+
+
+
 }
