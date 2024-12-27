@@ -1,6 +1,5 @@
 package com.gestioncontrats.gestioncontrats.config;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
@@ -12,17 +11,18 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.test.context.ActiveProfiles;
 
-import java.io.IOException;
 import java.util.Collections;
-import java.util.Date;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+@SpringBootTest
+@ActiveProfiles("test")
 public class JwtAuthenticationFilterTest {
 
     @InjectMocks
@@ -37,13 +37,15 @@ public class JwtAuthenticationFilterTest {
     @Mock
     private FilterChain filterChain;
 
-    private final String secretKey = "8053dd0a9cf773233ca096263caba301edb9f2a1dd60265f2f4c461b25d0bedd";
+    @Value("${jwt.secretkey}")
+    private String secretKey;
     private String validToken;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
+        // Génération d'un token valide
         validToken = Jwts.builder()
                 .setSubject("testuser")
                 .claim("roles", Collections.singletonList("ROLE_USER"))
@@ -62,7 +64,7 @@ public class JwtAuthenticationFilterTest {
 
         jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
 
-        assertNull(SecurityContextHolder.getContext().getAuthentication());
+        assertNull(SecurityContextHolder.getContext().getAuthentication(), "L'authentification doit être null pour un token invalide");
 
         verify(filterChain).doFilter(request, response);
     }
@@ -73,9 +75,8 @@ public class JwtAuthenticationFilterTest {
 
         jwtAuthenticationFilter.doFilterInternal(request, response, filterChain);
 
-        assertNull(SecurityContextHolder.getContext().getAuthentication());
+        assertNull(SecurityContextHolder.getContext().getAuthentication(), "L'authentification doit être null en l'absence de token");
 
         verify(filterChain).doFilter(request, response);
     }
-
 }
