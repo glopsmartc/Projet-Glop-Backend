@@ -1,5 +1,7 @@
 name: CI/CD Pipeline Microservice Gestion des contrats
-
+env:
+  JWT_SECRET: ${{ secrets.JWT_SECRET }}
+  
 on:
   push:
     branches:
