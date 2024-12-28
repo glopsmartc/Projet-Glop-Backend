@@ -34,6 +34,10 @@ public class ContratServiceImp implements ContratServiceItf {
 
     @Override
     public Contrat createContract(CreateContractRequest request, MultipartFile pdfFile, String token) throws IOException {
+        if (token == null || token.isEmpty()) {
+            throw new IllegalArgumentException("Token is required");
+        }
+
         // Create the contract object
         Contrat contrat = new Contrat();
         contrat.setDureeContrat(request.getDureeContrat());
@@ -135,7 +139,7 @@ public class ContratServiceImp implements ContratServiceItf {
         System.out.println("Prix avant parsing : " + prix);
         System.out.println("Nombre de personnes : " + nombrePersonnes);
         if (prix == null || prix.isEmpty()) {
-            return 0.0;
+            throw new IllegalArgumentException("Invalid price format");
         }
 
         String prixNet = prix.replaceAll("[^\\d.]", "");
@@ -170,6 +174,11 @@ public class ContratServiceImp implements ContratServiceItf {
 
     // sauvegarder le pdf sur le disque
     public String savePdfFile(MultipartFile file, Long id) throws IOException {
+        // Validate input
+        if (file == null || file.getOriginalFilename() == null || file.getOriginalFilename().isEmpty()) {
+            throw new IllegalArgumentException("Invalid file provided");
+        }
+
         // Create the filename with the contract ID and the original file name
         String fileName = id + "_" + file.getOriginalFilename();
 
