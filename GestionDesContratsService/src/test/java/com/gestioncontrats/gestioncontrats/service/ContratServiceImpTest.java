@@ -18,6 +18,7 @@ import static org.mockito.Mockito.*;
 
 import java.io.IOException;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -105,7 +106,7 @@ class ContratServiceImpTest {
 
         Offre result = contratServiceImp.findMatchingOffre(request);
 
-        assertEquals(null, result);
+        assertNull(result);
     }
 
     @Test
@@ -339,6 +340,73 @@ class ContratServiceImpTest {
         assertEquals("test@example.com", result.get(1).getClient());
     }
 
+    @Test
+    void testSavePdfFile_withInvalidFile() {
+        MultipartFile file = mock(MultipartFile.class);
+        when(file.getOriginalFilename()).thenReturn(null);
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> contratServiceImp.savePdfFile(file, 1L)
+        );
+
+        assertEquals("Invalid file provided", exception.getMessage());
+    }
+    @Test
+    void testParsePrix_withEmptyString() {
+        Throwable thrown = assertThrows(InvocationTargetException.class, () -> {
+            Method method = ContratServiceImp.class.getDeclaredMethod("parsePrix", String.class, int.class);
+            method.setAccessible(true);
+            method.invoke(contratServiceImp, "", 0);
+        });
+
+        assertInstanceOf(IllegalArgumentException.class, thrown.getCause());
+        assertEquals("Invalid price format", thrown.getCause().getMessage());
+    }
+
+
+    @Test
+    void testCreateContract_withNullToken() {
+        CreateContractRequest request = new CreateContractRequest();
+        request.setAssurerTransport(true);
+        request.setAssurerPersonnes(true);
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> contratServiceImp.createContract(request, null, null)
+        );
+
+        assertEquals("Token is required", exception.getMessage());
+    }
+
+    @Test
+    void testBuildOffreResponse_withUnsupportedDuration() {
+        CreateContractRequest request = new CreateContractRequest();
+        request.setDureeContrat("unsupported_duration");
+
+        Offre offre = new Offre();
+        offre.setPrixMin("100€/personneAccompagnante");
+        offre.setPrixMax("150€/personneAccompagnante");
+
+        IllegalArgumentException exception = assertThrows(
+                IllegalArgumentException.class,
+                () -> contratServiceImp.buildOffreResponse(offre, request)
+        );
+
+        assertEquals("Durée du contrat invalide", exception.getMessage());
+    }
+
+    @Test
+    void testRepositoryFailure_inGetContratById() {
+        when(contratRepository.findById(1L)).thenThrow(new RuntimeException("Database error"));
+
+        RuntimeException exception = assertThrows(
+                RuntimeException.class,
+                () -> contratServiceImp.getContratById(1L)
+        );
+
+        assertEquals("Database error", exception.getMessage());
+    }
 
 
 }
