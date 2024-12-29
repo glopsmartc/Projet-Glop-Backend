@@ -33,6 +33,15 @@ public class ContratServiceImp implements ContratServiceItf {
     }
 
     @Override
+    public Contrat saveContrat(Contrat contrat) {
+        if (contrat == null) {
+            throw new IllegalArgumentException("Le contrat ne peut pas être null");
+        }
+        return contratRepository.save(contrat);
+    }
+
+
+    @Override
     public Contrat createContract(CreateContractRequest request, MultipartFile pdfFile, String token) throws IOException {
         if (token == null || token.isEmpty()) {
             throw new IllegalArgumentException("Token is required");
