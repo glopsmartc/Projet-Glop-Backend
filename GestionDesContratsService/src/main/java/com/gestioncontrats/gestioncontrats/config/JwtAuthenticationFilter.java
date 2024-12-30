@@ -23,8 +23,8 @@ import java.util.stream.Collectors;
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    @Value("${jwt.secretkey}")
-    private String secretKey;
+
+    private final String secretKey = "8053dd0a9cf773233ca096263caba301edb9f2a1dd60265f2f4c461b25d0bedd";
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,

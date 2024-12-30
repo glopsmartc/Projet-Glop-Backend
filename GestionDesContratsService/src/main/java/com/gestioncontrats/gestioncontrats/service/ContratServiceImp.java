@@ -64,6 +64,7 @@ public class ContratServiceImp implements ContratServiceItf {
         contrat.setDateNaissanceSouscripteur(request.getDateNaissanceSouscripteur());
         contrat.setPrice(request.getPrice());
         contrat.setClient(userClientService.getAuthenticatedUser(token).getEmail());
+        contrat.setStatut("actif");
 
         // Convert accompanying persons
         contrat.setAccompagnants(request.getAccompagnants().stream().map(dto -> {
