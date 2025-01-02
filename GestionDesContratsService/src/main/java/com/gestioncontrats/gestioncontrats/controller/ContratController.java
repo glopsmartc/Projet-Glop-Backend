@@ -24,6 +24,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
@@ -89,6 +90,19 @@ public class ContratController {
         }
 
         return ResponseEntity.ok(offres);
+    }
+
+    @PatchMapping("/{id}/resilier")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<?> resilierContrat(@PathVariable Long id) {
+        Optional<Contrat> contratOpt = contratService.getContratById(id);
+        if (contratOpt.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Contrat non trouvé.");
+        }
+        Contrat contrat = contratOpt.get();
+        contrat.setStatut("Résilié");
+        contratService.saveContrat(contrat);
+        return ResponseEntity.ok("Contrat résilié avec succès.");
     }
 
     @GetMapping("/")

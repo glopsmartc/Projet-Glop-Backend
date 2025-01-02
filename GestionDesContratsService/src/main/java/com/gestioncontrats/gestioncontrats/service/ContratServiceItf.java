@@ -11,6 +11,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ContratServiceItf {
+
+    Contrat saveContrat(Contrat contrat);
+
     Offre findMatchingOffre(CreateContractRequest request);
 
     Contrat createContract(CreateContractRequest request, MultipartFile pdfFile, String token) throws IOException;
