@@ -233,4 +233,21 @@ public class ContratServiceImp implements ContratServiceItf {
         return contratRepository.findByClient(email);
     }
 
+    @Override
+    public File getContractPdf(Long contratId) {
+        Contrat contrat = contratRepository.findById(contratId)
+                .orElseThrow(() -> new IllegalArgumentException("Contrat non trouvé."));
+
+        if (contrat.getPdfPath() == null || contrat.getPdfPath().isEmpty()) {
+            throw new IllegalArgumentException("Aucun fichier PDF associé à ce contrat.");
+        }
+
+        File pdfFile = new File(contrat.getPdfPath());
+        if (!pdfFile.exists()) {
+            throw new IllegalArgumentException("Le fichier PDF n'existe pas sur le disque.");
+        }
+
+        return pdfFile;
+    }
+
 }
