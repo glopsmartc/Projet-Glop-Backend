@@ -12,6 +12,7 @@ import com.gestioncontrats.gestioncontrats.model.OffreRepository;
 import com.gestioncontrats.gestioncontrats.service.ContratServiceItf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -21,6 +22,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -170,6 +173,23 @@ public class ContratController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
         return ResponseEntity.ok(contrats);
+    }
+
+    @GetMapping("/download/{id}")
+    @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<?> downloadContractPdf(@PathVariable Long id) {
+        try {
+            File pdfFile = contratService.getContractPdf(id);
+
+            return ResponseEntity.ok()
+                    .header("Content-Disposition", "attachment; filename=\"" + pdfFile.getName() + "\"")
+                    .header("Content-Type", "application/pdf")
+                    .body(new InputStreamResource(new FileInputStream(pdfFile)));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (IOException e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erreur lors du téléchargement du fichier PDF.");
+        }
     }
 
 }
