@@ -1,7 +1,10 @@
 package com.gestioncontrats.gestioncontrats.seed;
 
+import com.gestioncontrats.gestioncontrats.controller.ContratController;
 import com.gestioncontrats.gestioncontrats.model.Offre;
 import com.gestioncontrats.gestioncontrats.model.OffreRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -9,6 +12,7 @@ import org.springframework.stereotype.Component;
 public class OffreSeeder implements CommandLineRunner {
 
     private final OffreRepository offreRepository;
+    private static final Logger log = LoggerFactory.getLogger(ContratController.class);
 
     public OffreSeeder(OffreRepository offreRepository) {
         this.offreRepository = offreRepository;
@@ -55,7 +59,7 @@ public class OffreSeeder implements CommandLineRunner {
         saveIfNotExists(offre3);
         saveIfNotExists(offre4);
 
-        System.out.println("Offres insérées si non existantes !");
+        log.info("Offres insérées si non existantes !");
     }
 
     private void saveIfNotExists(Offre offre) {

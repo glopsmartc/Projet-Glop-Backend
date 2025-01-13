@@ -1,8 +1,10 @@
 package com.gestioncontrats.gestioncontrats.config;
 
+import com.gestioncontrats.gestioncontrats.controller.ContratController;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import org.springframework.beans.factory.annotation.Value;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -22,9 +24,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
-
-
-    private final String secretKey = "8053dd0a9cf773233ca096263caba301edb9f2a1dd60265f2f4c461b25d0bedd";
+    private static final Logger log = LoggerFactory.getLogger(ContratController.class);
+    private static final String secretKey = "8053dd0a9cf773233ca096263caba301edb9f2a1dd60265f2f4c461b25d0bedd";
     @Override
     protected void doFilterInternal(HttpServletRequest request,
                                     HttpServletResponse response,
@@ -54,7 +55,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             Jwts.parserBuilder().setSigningKey(secretKey).build().parseClaimsJws(token);
             return true; // Le token est valide
         } catch (Exception e) {
-            System.out.println("Token invalide ou expiré");
+            log.info("Token invalide ou expiré");
         }
         return false; // Le token est invalide ou expiré
     }

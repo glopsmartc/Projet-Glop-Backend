@@ -11,13 +11,14 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-public class SecurityConfigTest {
+class SecurityConfigTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @BeforeEach
     public void setUp() {
+        // It is defined to provide a setup step for each test case if initialization or resource setup is required in the future.
     }
 
     @Test

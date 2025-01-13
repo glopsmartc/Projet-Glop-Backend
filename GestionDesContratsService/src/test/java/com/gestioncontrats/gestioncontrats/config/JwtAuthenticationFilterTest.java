@@ -1,7 +1,5 @@
 package com.gestioncontrats.gestioncontrats.config;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,14 +14,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.test.context.ActiveProfiles;
 
-import java.util.Collections;
-
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class JwtAuthenticationFilterTest {
+class JwtAuthenticationFilterTest {
 
     @InjectMocks
     private JwtAuthenticationFilter jwtAuthenticationFilter;
@@ -37,20 +33,20 @@ public class JwtAuthenticationFilterTest {
     @Mock
     private FilterChain filterChain;
 
-    @Value("${jwt.secretkey}")
-    private String secretKey;
-    private String validToken;
+    //@Value("${jwt.secretkey}")
+    //private String secretKey;
+    // private String validToken;
 
     @BeforeEach
     void setUp() {
         MockitoAnnotations.openMocks(this);
 
-        // Génération d'un token valide
-        validToken = Jwts.builder()
-                .setSubject("testuser")
-                .claim("roles", Collections.singletonList("ROLE_USER"))
-                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
-                .compact();
+//        // Génération d'un token valide
+//        validToken = Jwts.builder()
+//                .setSubject("testuser")
+//                .claim("roles", Collections.singletonList("ROLE_USER"))
+//                .signWith(Keys.hmacShaKeyFor(secretKey.getBytes()))
+//                .compact();
     }
 
     @AfterEach
