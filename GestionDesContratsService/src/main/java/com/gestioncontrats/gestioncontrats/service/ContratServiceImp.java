@@ -1,9 +1,12 @@
 package com.gestioncontrats.gestioncontrats.service;
 
 import com.gestioncontrats.gestioncontrats.config.UserClientService;
+import com.gestioncontrats.gestioncontrats.controller.ContratController;
 import com.gestioncontrats.gestioncontrats.dto.CreateContractRequest;
 import com.gestioncontrats.gestioncontrats.dto.OffreResponse;
 import com.gestioncontrats.gestioncontrats.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -25,6 +28,8 @@ public class ContratServiceImp implements ContratServiceItf {
     private final OffreRepository offreRepository;
 
     private final UserClientService userClientService;
+
+    private static final Logger log = LoggerFactory.getLogger(ContratController.class);
 
     public ContratServiceImp(ContratRepository contratRepository, OffreRepository offreRepository, UserClientService userClientService) {
         this.contratRepository = contratRepository;
@@ -146,8 +151,8 @@ public class ContratServiceImp implements ContratServiceItf {
 
     // Méthode utilitaire pour extraire le prix
     private double parsePrix(String prix, int nombrePersonnes) {
-        System.out.println("Prix avant parsing : " + prix);
-        System.out.println("Nombre de personnes : " + nombrePersonnes);
+        log.info("Prix avant parsing : {}", prix);
+        log.info("Nombre de personnes : {}", nombrePersonnes);
         if (prix == null || prix.isEmpty()) {
             throw new IllegalArgumentException("Invalid price format");
         }
@@ -208,7 +213,7 @@ public class ContratServiceImp implements ContratServiceItf {
 
         // Save the file
         file.transferTo(destinationFile);
-        System.out.println("File saved to: " + destinationFile.getAbsolutePath());
+        log.info("File saved to: {}", destinationFile.getAbsolutePath());
 
         return destinationFile.getAbsolutePath();
     }

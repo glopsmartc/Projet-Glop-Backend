@@ -1,7 +1,5 @@
 package com.gestioncontrats.gestioncontrats.model;
 
-import ch.qos.logback.core.net.server.Client;
-import com.gestioncontrats.gestioncontrats.dto.UtilisateurDTO;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

@@ -13,7 +13,7 @@ import java.util.List;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class ContratRepositoryTest {
+class ContratRepositoryTest {
 
     @Autowired
     private ContratRepository contratRepository;

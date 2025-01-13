@@ -8,7 +8,6 @@ import com.gestioncontrats.gestioncontrats.dto.OffreResponse;
 import com.gestioncontrats.gestioncontrats.dto.UtilisateurDTO;
 import com.gestioncontrats.gestioncontrats.model.Contrat;
 import com.gestioncontrats.gestioncontrats.model.Offre;
-import com.gestioncontrats.gestioncontrats.model.OffreRepository;
 import com.gestioncontrats.gestioncontrats.service.ContratServiceItf;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,7 +24,6 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -37,6 +35,7 @@ public class ContratController {
     private static final Logger log = LoggerFactory.getLogger(ContratController.class);
     private final ContratServiceItf contratService;
 
+    private static final String BEARER = "Bearer ";
 
     private final UserClientService utilisateurService;
 
@@ -47,17 +46,17 @@ public class ContratController {
 
     @PostMapping( value="/create", consumes = {MULTIPART_FORM_DATA_VALUE, "application/json"})
     @PreAuthorize("hasRole('CLIENT')")
-    public ResponseEntity<?> createContract(@RequestHeader("Authorization") String authorizationHeader, @RequestPart("request") String requestJson, @RequestPart(value = "file") MultipartFile pdfFile) throws IOException {
-        String token = authorizationHeader.replace("Bearer ", "");
+    public ResponseEntity<Object> createContract(@RequestHeader("Authorization") String authorizationHeader, @RequestPart("request") String requestJson, @RequestPart(value = "file") MultipartFile pdfFile) throws IOException {
+        String token = authorizationHeader.replace(BEARER, "");
 
         // Deserialize JSON
         ObjectMapper mapper = new ObjectMapper();
         mapper.registerModule(new JavaTimeModule());
         CreateContractRequest request = mapper.readValue(requestJson, CreateContractRequest.class);
 
-        log.info("Received Content-Type: " + pdfFile.getContentType());
-        log.info("Request Details: " + request);
-        
+        log.info("Received Content-Type: {}", pdfFile.getContentType());
+        log.info("Request Details: {}", request);
+
         if (!pdfFile.getContentType().equals("application/pdf")) {
             return ResponseEntity.badRequest().body("Le fichier doit être un PDF.");
         }
@@ -71,7 +70,7 @@ public class ContratController {
 
     @PostMapping("/getOffre")
     @PreAuthorize("hasRole('CLIENT')")
-    public ResponseEntity<?> getOffreCorrespondante(@RequestBody CreateContractRequest request) {
+    public ResponseEntity<Object> getOffreCorrespondante(@RequestBody CreateContractRequest request) {
         Offre offreCorrespondante = contratService.findMatchingOffre(request);
         if (offreCorrespondante == null) {
             return ResponseEntity.badRequest().body("Aucune offre correspondante trouvée.");
@@ -97,7 +96,7 @@ public class ContratController {
 
     @PatchMapping("/{id}/resilier")
     @PreAuthorize("hasRole('CLIENT')")
-    public ResponseEntity<?> resilierContrat(@PathVariable Long id) {
+    public ResponseEntity<String> resilierContrat(@PathVariable Long id) {
         Optional<Contrat> contratOpt = contratService.getContratById(id);
         if (contratOpt.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Contrat non trouvé.");
@@ -136,7 +135,7 @@ public class ContratController {
 
     @GetMapping("/current-user")
     public UtilisateurDTO getCurrentUser(@RequestHeader("Authorization") String authorizationHeader) {
-        String token = authorizationHeader.replace("Bearer ", "");
+        String token = authorizationHeader.replace(BEARER, "");
 
         return utilisateurService.getAuthenticatedUser(token);
     }
@@ -158,7 +157,7 @@ public class ContratController {
     @PreAuthorize("hasRole('CLIENT')")
     public ResponseEntity<List<Contrat>> getUserContracts(@RequestHeader("Authorization") String authorizationHeader) {
         // Extraction du token
-        String token = authorizationHeader.replace("Bearer ", "");
+        String token = authorizationHeader.replace(BEARER, "");
         // Récupération de l'email à partir du token
         String clientEmail = utilisateurService.getAuthenticatedUser(token).getEmail();
 
@@ -166,7 +165,7 @@ public class ContratController {
         List<Contrat> contrats = contratService.getContratsByClientEmail(clientEmail);
 
         // Log pour vérifier les contrats récupérés
-        System.out.println("Contrats récupérés pour l'email " + clientEmail + ": " + contrats);
+        log.info("Contrats récupérés pour l'email {}: {}",clientEmail, contrats);
 
         // Retourner les contrats ou un statut 404 si aucun n'est trouvé
         if (contrats.isEmpty()) {
@@ -177,7 +176,7 @@ public class ContratController {
 
     @GetMapping("/download/{id}")
     @PreAuthorize("hasRole('CLIENT')")
-    public ResponseEntity<?> downloadContractPdf(@PathVariable Long id) {
+    public ResponseEntity<Object> downloadContractPdf(@PathVariable Long id) {
         try {
             File pdfFile = contratService.getContractPdf(id);
 
