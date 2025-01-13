@@ -11,7 +11,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest(classes = GestioncontratsApplication.class)
 @ActiveProfiles("test")
-public class AccompagnantRepositoryTest {
+class AccompagnantRepositoryTest {
 
     @Autowired
     private AccompagnantRepository accompagnantRepository;

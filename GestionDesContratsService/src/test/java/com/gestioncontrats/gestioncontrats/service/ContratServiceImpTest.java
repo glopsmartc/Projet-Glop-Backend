@@ -45,7 +45,7 @@ class ContratServiceImpTest {
     }
 
     @Test
-    public void testCreateContract_withMatchingOffre() {
+    void testCreateContract_withMatchingOffre() {
         CreateContractRequest request = new CreateContractRequest();
         request.setDureeContrat("12");
         request.setAssurerTransport(true);
@@ -56,6 +56,14 @@ class ContratServiceImpTest {
         accompagnant.setNom("Doe");
         accompagnant.setPrenom("John");
         request.getAccompagnants().add(accompagnant);
+
+        // Assertion: Check if the contract request has the expected properties
+        assertEquals("12", request.getDureeContrat(), "La durée du contrat doit être 12");
+        assertTrue(request.isAssurerTransport(), "Le transport doit être assuré");
+        assertTrue(request.isAssurerPersonnes(), "Les personnes doivent être assurées");
+        assertEquals(1, request.getAccompagnants().size(), "Il doit y avoir 1 accompagnant");
+        assertEquals("Doe", request.getAccompagnants().get(0).getNom(), "Le nom de l'accompagnant doit être 'Doe'");
+        assertEquals("John", request.getAccompagnants().get(0).getPrenom(), "Le prénom de l'accompagnant doit être 'John'");
     }
 
 
