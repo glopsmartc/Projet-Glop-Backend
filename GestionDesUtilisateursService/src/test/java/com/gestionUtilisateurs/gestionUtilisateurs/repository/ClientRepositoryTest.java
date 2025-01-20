@@ -54,4 +54,6 @@ public class ClientRepositoryTest {
             clientRepository.save(invalidClient);
         });
     }
+
+
 }
