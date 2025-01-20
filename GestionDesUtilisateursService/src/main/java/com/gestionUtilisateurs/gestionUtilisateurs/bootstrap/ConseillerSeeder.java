@@ -38,7 +38,7 @@ public class ConseillerSeeder implements ApplicationListener<ContextRefreshedEve
         this.createConseiller();
     }
 
-    private void createConseiller() {
+    public void createConseiller() {
         //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         RegisterUserDto userDto = new RegisterUserDto();
         userDto.setNom("Super conseiller");
