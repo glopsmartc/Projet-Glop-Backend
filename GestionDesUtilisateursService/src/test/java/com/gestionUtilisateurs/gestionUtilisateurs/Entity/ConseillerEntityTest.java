@@ -66,4 +66,16 @@ class ConseillerEntityTest {
             utilisateurRepository.save(conseiller);
         });
     }
+
+    @Test
+    void testConseillerValidation_NullFields() {
+        Conseiller conseiller = new Conseiller();
+        conseiller.setNom(null);
+        conseiller.setPrenom(null);
+        conseiller.setEmail(null);
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            utilisateurRepository.save(conseiller);
+        });
+    }
 }

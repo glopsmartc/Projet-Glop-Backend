@@ -4,6 +4,7 @@ import com.gestionUtilisateurs.gestionUtilisateurs.GestionDesUtilisateursService
 import com.gestionUtilisateurs.gestionUtilisateurs.model.Utilisateur;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.UtilisateurRepository;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.RoleRepository;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,8 +14,10 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
+import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest(classes = GestionDesUtilisateursServiceApplication.class)
@@ -51,5 +54,14 @@ public class UtilisateurRepositoryTest {
     public void testFindByResetToken_NotFound() {
         Optional<Utilisateur> foundUtilisateur = utilisateurRepository.findByResetToken("nonexistent-token");
         assertFalse(foundUtilisateur.isPresent());
+    }
+
+    @Test
+    public void testValidation_InvalidEmail() {
+        utilisateur.setEmail("invalid-email");
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            utilisateurRepository.save(utilisateur);
+        });
     }
 }
