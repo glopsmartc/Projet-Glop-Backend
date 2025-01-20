@@ -39,6 +39,9 @@ public class Contrat {
     private String price;
 
     private String client; //email
+    private String clientNom;
+    private String clientPrenom;
+
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "contrat_id")
