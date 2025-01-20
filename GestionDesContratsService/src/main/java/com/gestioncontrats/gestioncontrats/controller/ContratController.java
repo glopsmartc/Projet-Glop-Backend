@@ -175,7 +175,7 @@ public class ContratController {
     }
 
     @GetMapping("/download/{id}")
-    @PreAuthorize("hasRole('CLIENT')")
+    @PreAuthorize("hasRole('CLIENT') or hasRole('CONSEILLER')")
     public ResponseEntity<Object> downloadContractPdf(@PathVariable Long id) {
         try {
             File pdfFile = contratService.getContractPdf(id);
