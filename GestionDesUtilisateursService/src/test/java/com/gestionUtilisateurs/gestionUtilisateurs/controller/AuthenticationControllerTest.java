@@ -76,6 +76,7 @@ class AuthenticationControllerTest {
     }
 
 
+
     @Test
     void testResetPassword() {
         ResetPasswordRequest request = new ResetPasswordRequest();
