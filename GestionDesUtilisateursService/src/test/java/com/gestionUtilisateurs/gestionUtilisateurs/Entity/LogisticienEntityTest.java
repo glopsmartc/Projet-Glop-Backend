@@ -67,4 +67,16 @@ class LogisticienEntityTest {
             utilisateurRepository.save(logisticien);
         });
     }
+
+    @Test
+    void testLogisticienValidation_NullFields() {
+        Logisticien logisticien = new Logisticien();
+        logisticien.setNom(null);
+        logisticien.setPrenom(null);
+        logisticien.setEmail(null);
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            utilisateurRepository.save(logisticien);
+        });
+    }
 }
