@@ -1,5 +1,6 @@
 package com.gestionUtilisateurs.gestionUtilisateurs.service;
 
+import com.gestionUtilisateurs.gestionUtilisateurs.dto.LoginUserDto;
 import com.gestionUtilisateurs.gestionUtilisateurs.dto.RegisterUserDto;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.Utilisateur;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.UtilisateurRepository;
@@ -11,6 +12,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.List;
@@ -86,4 +88,6 @@ class UserServiceImpTest {
         assertEquals(2, users.size());
         verify(userRepository, times(1)).findAll();
     }
+
+
 }
