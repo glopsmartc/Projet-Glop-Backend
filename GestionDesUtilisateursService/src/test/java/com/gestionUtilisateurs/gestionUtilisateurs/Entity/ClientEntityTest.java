@@ -1,12 +1,11 @@
 package com.gestionUtilisateurs.gestionUtilisateurs.Entity;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import com.gestionUtilisateurs.gestionUtilisateurs.model.Client;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.ClientRepository;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.Role;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.RoleEnum;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.RoleRepository;
+import jakarta.validation.ConstraintViolationException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +15,8 @@ import org.springframework.test.context.jdbc.Sql;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDate;
 import java.util.Optional;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
 @Transactional
@@ -69,5 +70,17 @@ public class ClientEntityTest {
         utilisateurRepository.delete(savedUtilisateur);
 
         assertEquals(utilisateurRepository.findById(savedUtilisateur.getIdUser()).isPresent(), false);
+    }
+
+    @Test
+    void testClientValidation_NullFields() {
+        Client client = new Client();
+        client.setNom(null);
+        client.setPrenom(null);
+        client.setEmail(null);
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            utilisateurRepository.save(client);
+        });
     }
 }

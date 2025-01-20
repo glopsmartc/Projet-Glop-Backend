@@ -74,5 +74,17 @@ class MedecinEntityTest {
             utilisateurRepository.save(medecin);
         });
     }
+
+    @Test
+    void testMedecinValidation_NullFields() {
+        Medecin medecin = new Medecin();
+        medecin.setNom(null);
+        medecin.setPrenom(null);
+        medecin.setEmail(null);
+
+        assertThrows(ConstraintViolationException.class, () -> {
+            utilisateurRepository.save(medecin);
+        });
+    }
 }
 
