@@ -8,6 +8,7 @@ import com.gestioncontrats.gestioncontrats.dto.UtilisateurDTO;
 import com.gestioncontrats.gestioncontrats.model.Contrat;
 import com.gestioncontrats.gestioncontrats.model.Offre;
 import com.gestioncontrats.gestioncontrats.service.ContratServiceItf;
+import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -21,13 +22,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 class ContratControllerTest {
@@ -52,7 +55,7 @@ class ContratControllerTest {
         Offre offre = new Offre();
         contrat.setOffre(offre);
 
-        MultipartFile pdfFile = Mockito.mock(MultipartFile.class);
+        MultipartFile pdfFile = mock(MultipartFile.class);
         when(pdfFile.getContentType()).thenReturn("application/pdf");
 
         when(contratService.createContract(any(CreateContractRequest.class), eq(pdfFile), anyString())).thenReturn(contrat);
@@ -222,7 +225,7 @@ class ContratControllerTest {
         when(contratService.getContratById(anyLong())).thenReturn(java.util.Optional.empty());
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            contratController.getContratById(999L); // Invalid ID
+            contratController.getContratById(999L);
         });
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
@@ -260,6 +263,76 @@ class ContratControllerTest {
 
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(0, response.getBody().size());
+    }
+
+    @Test
+    void testDownloadContractPdf_success() throws IOException {
+        File pdfFile = new File("test.pdf");
+        pdfFile.createNewFile();
+
+        when(contratService.getContractPdf(1L)).thenReturn(pdfFile);
+
+        ResponseEntity<Object> response = contratController.downloadContractPdf(1L);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertNotNull(response.getBody());
+
+        pdfFile.delete();
+    }
+
+    @Test
+    void testDownloadContractPdf_contractNotFound() {
+        when(contratService.getContractPdf(1L)).thenThrow(new IllegalArgumentException("Contrat non trouvé."));
+
+        ResponseEntity<Object> response = contratController.downloadContractPdf(1L);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("Contrat non trouvé.", response.getBody());
+    }
+
+    @Test
+    void testDownloadContractPdf_pdfNotFound() {
+        when(contratService.getContractPdf(1L)).thenThrow(new IllegalArgumentException("Aucun fichier PDF associé à ce contrat."));
+
+        ResponseEntity<Object> response = contratController.downloadContractPdf(1L);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("Aucun fichier PDF associé à ce contrat.", response.getBody());
+    }
+    @Test
+    void testResilierContrat_success() {
+        Contrat contrat = new Contrat();
+        contrat.setId(1L);
+        contrat.setStatut("actif");
+
+        when(contratService.getContratById(1L)).thenReturn(Optional.of(contrat));
+
+        ResponseEntity<String> response = contratController.resilierContrat(1L);
+
+        assertEquals(HttpStatus.OK, response.getStatusCode());
+        assertEquals("Contrat résilié avec succès.", response.getBody());
+        assertEquals("Résilié", contrat.getStatut());
+    }
+
+    @Test
+    void testResilierContrat_contractNotFound() {
+        when(contratService.getContratById(1L)).thenReturn(Optional.empty());
+
+        ResponseEntity<String> response = contratController.resilierContrat(1L);
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("Contrat non trouvé.", response.getBody());
+    }
+    @Test
+    void testCreateContract_invalidPdfFile() throws IOException {
+        MultipartFile invalidFile = new MockMultipartFile("file", "test.txt", "text/plain", "Invalid content".getBytes());
+
+        String authorizationHeader = "Bearer fake_token";
+
+        ResponseEntity<?> response = contratController.createContract(authorizationHeader, "{}", invalidFile);
+
+        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
+        assertEquals("Le fichier doit être un PDF.", response.getBody());
     }
 
 
