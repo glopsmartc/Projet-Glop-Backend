@@ -90,6 +90,13 @@ public class ContratServiceImp implements ContratServiceItf {
         }
         contrat.setOffre(offreCorrespondante);
 
+        // Vérifier si le client a souscrit à l'offre "descriptionMin" ou "descriptionMax"
+        if (offreCorrespondante.getDescriptionMin() != null && !offreCorrespondante.getDescriptionMin().isEmpty()) {
+            contrat.setOffreMinOuMax(2);  // Souscrit à l'offre min
+        } else {
+            contrat.setOffreMinOuMax(1);  // Sinon max
+        }
+
         // Save the contract first to generate its ID
         Contrat savedContrat = contratRepository.save(contrat);
 

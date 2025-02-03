@@ -28,6 +28,7 @@ public class Contrat {
     private boolean bicyclette;
     private Integer nombrePersonnes;
     private LocalDate debutContrat;
+    private Integer offreMinOuMax;// Peut être 1 ou 2
     private String destination;
     private LocalDate dateAller;
     private LocalDate dateRetour;
