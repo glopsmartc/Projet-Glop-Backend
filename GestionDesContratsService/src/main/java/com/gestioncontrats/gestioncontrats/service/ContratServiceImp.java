@@ -71,6 +71,7 @@ public class ContratServiceImp implements ContratServiceItf {
         contrat.setClient(userClientService.getAuthenticatedUser(token).getEmail());
         contrat.setClientNom(userClientService.getAuthenticatedUser(token).getNom());
         contrat.setClientPrenom(userClientService.getAuthenticatedUser(token).getPrenom());
+        contrat.setDescription(request.getDescriptionOffre());
         contrat.setStatut("actif");
 
         // Convert accompanying persons
@@ -89,6 +90,13 @@ public class ContratServiceImp implements ContratServiceItf {
             throw new IllegalArgumentException("Aucune offre correspondante trouvée.");
         }
         contrat.setOffre(offreCorrespondante);
+
+        // Vérifier si le client a souscrit à l'offre "descriptionMin" ou "descriptionMax"
+        if (offreCorrespondante.getDescriptionMin().equals(request.getDescriptionOffre())) {
+            contrat.setOffreMinOuMax(2);  // Souscrit à l'offre min
+        } else {
+            contrat.setOffreMinOuMax(1);  // Sinon max
+        }
 
         // Save the contract first to generate its ID
         Contrat savedContrat = contratRepository.save(contrat);

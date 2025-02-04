@@ -26,6 +26,7 @@ public class CreateContractRequest {
     private List<AccompagnantDto> accompagnants;
     private String planName;
     private String price;
+    private String descriptionOffre;
 }
 
 
