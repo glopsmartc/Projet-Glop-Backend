@@ -43,6 +43,7 @@ public class Contrat {
     private String clientNom;
     private String clientPrenom;
 
+    private String description;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "contrat_id")

@@ -151,6 +151,16 @@ public class ContratController {
                     return new ResponseStatusException(HttpStatus.NOT_FOUND, "Contrat non trouvé.");
                 });
     }
+    @GetMapping("/offreDescription/{id}")
+    public ResponseEntity<String> getOffreDescByContratId(@PathVariable Long id) {
+        Contrat contrat = contratService.getContratById(id).get();
+
+        return Optional.ofNullable(contrat)
+                .map(Contrat::getDescription)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Description du contrat non trouvée."));
+    }
+
 
 
     @GetMapping("/user-contracts")
