@@ -45,7 +45,7 @@ public class LogisticienSeeder  implements ApplicationListener<ContextRefreshedE
         userDto.setPrenom("salma");
         userDto.setAdresse("PARIS");
         userDto.setSexe("Feminin");
-        userDto.setNumTel("+3323232323");
+        userDto.setNumTel("+3354545445");
 
 
         Optional<Role> optionalRole = roleRepository.findByName(RoleEnum.LOGISTICIEN);
