@@ -154,6 +154,7 @@ public class ContratController {
                 });
     }
     @GetMapping("/offreDescription/{id}")
+    //@PreAuthorize(("hasRole('CLIENT')"))
     public ResponseEntity<String> getOffreDescByContratId(@PathVariable Long id) {
         Contrat contrat = contratService.getContratById(id).get();
 
