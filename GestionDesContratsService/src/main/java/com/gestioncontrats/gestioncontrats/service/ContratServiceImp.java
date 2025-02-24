@@ -8,6 +8,7 @@ import com.gestioncontrats.gestioncontrats.model.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,9 +16,11 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import java.util.stream.StreamSupport;
 
 @Service
 public class ContratServiceImp implements ContratServiceItf {
@@ -263,6 +266,45 @@ public class ContratServiceImp implements ContratServiceItf {
         }
 
         return pdfFile;
+    }
+    private void updateExpiredContracts() {
+        List<Contrat> contratsActifs = StreamSupport.stream(contratRepository.findAll().spliterator(), false)
+                .filter(contrat -> "actif".equals(contrat.getStatut()))
+                .toList();
+
+        LocalDate today = LocalDate.now();
+
+        for (Contrat contrat : contratsActifs) {
+            LocalDate dateFin = calculerDateFin(contrat);
+            if (dateFin.isBefore(today)) {
+                contrat.setStatut("terminé");
+                contratRepository.save(contrat);
+                log.info("Contrat ID {} mis à jour comme terminé.", contrat.getId());
+            }
+        }
+    }
+
+    private LocalDate calculerDateFin(Contrat contrat) {
+        switch (contrat.getDureeContrat()) {
+            case "1_mois":
+                return contrat.getDebutContrat().plusMonths(1);
+            case "3_mois":
+                return contrat.getDebutContrat().plusMonths(3);
+            case "6_mois":
+                return contrat.getDebutContrat().plusMonths(6);
+            case "1_an":
+                return contrat.getDebutContrat().plusYears(1);
+            case "1_voyage":
+                return contrat.getDateRetour();
+            default:
+                throw new IllegalArgumentException("Durée de contrat invalide.");
+        }
+    }
+
+    @Scheduled(cron = "0 0 0 * * ?") // Exécute tous les jours à minuit
+    //@Scheduled(cron = "0 * * * * ?") // Exécute toutes les minutes
+    public void checkAndUpdateContracts() {
+        updateExpiredContracts();
     }
 
 }
