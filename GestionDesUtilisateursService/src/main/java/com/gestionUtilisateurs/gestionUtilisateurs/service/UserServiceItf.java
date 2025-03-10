@@ -1,5 +1,6 @@
 package com.gestionUtilisateurs.gestionUtilisateurs.service;
 
+import com.gestionUtilisateurs.gestionUtilisateurs.dto.MaladieChroniqueDTO;
 import com.gestionUtilisateurs.gestionUtilisateurs.dto.RegisterUserDto;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.Utilisateur;
 import jakarta.transaction.Transactional;
@@ -14,4 +15,6 @@ public interface UserServiceItf {
 
     @Transactional
     void updateDateNaissance(String email, LocalDate dateNaissance);
+
+    boolean updateMaladieChronique(MaladieChroniqueDTO maladieChroniqueDTO);
 }

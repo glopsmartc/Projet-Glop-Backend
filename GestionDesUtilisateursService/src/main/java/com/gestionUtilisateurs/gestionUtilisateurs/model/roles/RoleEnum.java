@@ -5,5 +5,6 @@ public enum RoleEnum {
     MEDECIN,
     CONSEILLER,
     LOGISTICIEN,
-    CLIENT
+    CLIENT,
+    PARTENAIRE
 }

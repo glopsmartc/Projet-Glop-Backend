@@ -24,13 +24,14 @@ public class RoleSeeder implements ApplicationListener<ContextRefreshedEvent> {
     }
 
     private void loadRoles() {
-        RoleEnum[] roleNames = new RoleEnum[] { RoleEnum.USER, RoleEnum.CLIENT, RoleEnum.CONSEILLER, RoleEnum.LOGISTICIEN, RoleEnum.MEDECIN };
+        RoleEnum[] roleNames = new RoleEnum[] { RoleEnum.USER, RoleEnum.CLIENT, RoleEnum.CONSEILLER, RoleEnum.LOGISTICIEN, RoleEnum.MEDECIN, RoleEnum.PARTENAIRE };
         Map<RoleEnum, String> roleDescriptionMap = Map.of(
                 RoleEnum.USER, "Default user role",
                 RoleEnum.MEDECIN, "Medecin role",
                 RoleEnum.CLIENT, "Client role",
                 RoleEnum.CONSEILLER, "Conseiller role",
-                RoleEnum.LOGISTICIEN, "Logisticien role"
+                RoleEnum.LOGISTICIEN, "Logisticien role",
+                RoleEnum.PARTENAIRE, "Partenaire role"
         );
 
         Arrays.stream(roleNames).forEach((roleName) -> {

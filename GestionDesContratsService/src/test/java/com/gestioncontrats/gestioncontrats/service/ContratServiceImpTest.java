@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.time.LocalDate;
 import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -57,7 +58,6 @@ class ContratServiceImpTest {
         accompagnant.setPrenom("John");
         request.getAccompagnants().add(accompagnant);
 
-        // Assertion: Check if the contract request has the expected properties
         assertEquals("12", request.getDureeContrat(), "La durée du contrat doit être 12");
         assertTrue(request.isAssurerTransport(), "Le transport doit être assuré");
         assertTrue(request.isAssurerPersonnes(), "Les personnes doivent être assurées");
@@ -293,7 +293,7 @@ class ContratServiceImpTest {
 
     @Test
     void testGetAllOffres() {
-        // Création d'une liste d'offres simulées
+
         Offre offre1 = new Offre();
         offre1.setNomOffre("Offre1");
         Offre offre2 = new Offre();
@@ -303,7 +303,7 @@ class ContratServiceImpTest {
 
         List<Offre> result = contratServiceImp.getAllOffres();
 
-        // Vérification des résultats
+
         assertNotNull(result);
         assertEquals(2, result.size());
         assertEquals("Offre1", result.get(0).getNomOffre());
@@ -312,7 +312,7 @@ class ContratServiceImpTest {
 
     @Test
     void testGetAllContrats() {
-        // Création d'une liste de contrats simulés
+
         Contrat contrat1 = new Contrat();
         contrat1.setId(1L);
         Contrat contrat2 = new Contrat();
@@ -322,7 +322,7 @@ class ContratServiceImpTest {
 
         List<Contrat> result = contratServiceImp.getAllContrats();
 
-        // Vérification des résultats
+
         assertNotNull(result);
         assertEquals(2, result.size());
         assertEquals(1L, result.get(0).getId());
@@ -331,7 +331,7 @@ class ContratServiceImpTest {
 
     @Test
     void testGetContratsByClientEmail() {
-        // Création d'un contrat simulé
+
         Contrat contrat1 = new Contrat();
         contrat1.setClient("test@example.com");
         Contrat contrat2 = new Contrat();
@@ -341,7 +341,7 @@ class ContratServiceImpTest {
 
         List<Contrat> result = contratServiceImp.getContratsByClientEmail("test@example.com");
 
-        // Vérification des résultats
+
         assertNotNull(result);
         assertEquals(2, result.size());
         assertEquals("test@example.com", result.get(0).getClient());
@@ -416,5 +416,71 @@ class ContratServiceImpTest {
         assertEquals("Database error", exception.getMessage());
     }
 
+    @Test
+    void testCheckAndUpdateContracts() {
 
+        Contrat contratExpiré = new Contrat();
+        contratExpiré.setId(1L);
+        contratExpiré.setStatut("actif");
+        contratExpiré.setDureeContrat("1_mois");
+        contratExpiré.setDebutContrat(LocalDate.now().minusMonths(2));
+        when(contratRepository.findAll()).thenReturn(List.of(contratExpiré));
+
+
+        contratServiceImp.checkAndUpdateContracts();
+
+
+        assertEquals("terminé", contratExpiré.getStatut());
+        verify(contratRepository, times(1)).save(contratExpiré);
+    }
+
+    @Test
+    void testSaveContrat() {
+
+        Contrat contrat = new Contrat();
+        when(contratRepository.save(contrat)).thenReturn(contrat);
+
+
+        Contrat result = contratServiceImp.saveContrat(contrat);
+
+
+        assertEquals(contrat, result);
+    }
+
+    @Test
+    void testSaveContrat_withNullContrat() {
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            contratServiceImp.saveContrat(null);
+        });
+        assertEquals("Le contrat ne peut pas être null", exception.getMessage());
+    }
+
+
+    @Test
+    void testGetContractPdf_contractNotFound() {
+
+        when(contratRepository.findById(1L)).thenReturn(Optional.empty());
+
+
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () -> {
+            contratServiceImp.getContractPdf(1L);
+        });
+        assertEquals("Contrat non trouvé.", exception.getMessage());
+    }
+    @Test
+    void testCalculerDateFin() throws Exception {
+
+        Contrat contrat = new Contrat();
+        contrat.setDureeContrat("1_mois");
+        contrat.setDebutContrat(LocalDate.of(2023, 1, 1));
+
+        Method method = ContratServiceImp.class.getDeclaredMethod("calculerDateFin", Contrat.class);
+        method.setAccessible(true);
+
+
+        LocalDate dateFin = (LocalDate) method.invoke(contratServiceImp, contrat);
+
+        assertEquals(LocalDate.of(2023, 2, 1), dateFin);
+    }
 }

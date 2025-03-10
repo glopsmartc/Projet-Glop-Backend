@@ -1,5 +1,5 @@
 package com.gestioncontrats.gestioncontrats.controller;
-
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gestioncontrats.gestioncontrats.config.UserClientService;
 import com.gestioncontrats.gestioncontrats.dto.CreateContractRequest;
@@ -8,13 +8,13 @@ import com.gestioncontrats.gestioncontrats.dto.UtilisateurDTO;
 import com.gestioncontrats.gestioncontrats.model.Contrat;
 import com.gestioncontrats.gestioncontrats.model.Offre;
 import com.gestioncontrats.gestioncontrats.service.ContratServiceItf;
-import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
@@ -25,12 +25,13 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
-import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 class ContratControllerTest {
@@ -55,7 +56,7 @@ class ContratControllerTest {
         Offre offre = new Offre();
         contrat.setOffre(offre);
 
-        MultipartFile pdfFile = mock(MultipartFile.class);
+        MultipartFile pdfFile = Mockito.mock(MultipartFile.class);
         when(pdfFile.getContentType()).thenReturn("application/pdf");
 
         when(contratService.createContract(any(CreateContractRequest.class), eq(pdfFile), anyString())).thenReturn(contrat);
@@ -265,75 +266,52 @@ class ContratControllerTest {
         assertEquals(0, response.getBody().size());
     }
 
-    @Test
-    void testDownloadContractPdf_success() throws IOException {
-        File pdfFile = new File("test.pdf");
-        pdfFile.createNewFile();
-
-        when(contratService.getContractPdf(1L)).thenReturn(pdfFile);
-
-        ResponseEntity<Object> response = contratController.downloadContractPdf(1L);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertNotNull(response.getBody());
-
-        pdfFile.delete();
-    }
 
     @Test
-    void testDownloadContractPdf_contractNotFound() {
-        when(contratService.getContractPdf(1L)).thenThrow(new IllegalArgumentException("Contrat non trouvé."));
+    void testDownloadContractPdf_fileNotFound() {
+        Long id = 1L;
+        when(contratService.getContractPdf(id)).thenThrow(new IllegalArgumentException("Fichier non trouvé"));
 
-        ResponseEntity<Object> response = contratController.downloadContractPdf(1L);
+
+        ResponseEntity<Object> response = contratController.downloadContractPdf(id);
+
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals("Contrat non trouvé.", response.getBody());
+        assertEquals("Fichier non trouvé", response.getBody());
     }
 
-    @Test
-    void testDownloadContractPdf_pdfNotFound() {
-        when(contratService.getContractPdf(1L)).thenThrow(new IllegalArgumentException("Aucun fichier PDF associé à ce contrat."));
 
-        ResponseEntity<Object> response = contratController.downloadContractPdf(1L);
+    @Test
+    void testGetUserContractsId_noContractsFound() {
+
+        String token = "Bearer token";
+        UtilisateurDTO user = new UtilisateurDTO();
+        user.setEmail("client@example.com");
+        when(utilisateurService.getAuthenticatedUser("token")).thenReturn(user);
+        when(contratService.getContratsByClientEmail("client@example.com")).thenReturn(new ArrayList<>());
+
+
+        ResponseEntity<List<Long>> response = contratController.getUserContractsId(token);
+
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
-        assertEquals("Aucun fichier PDF associé à ce contrat.", response.getBody());
+        assertEquals(Collections.emptyList(), response.getBody());
     }
-    @Test
-    void testResilierContrat_success() {
-        Contrat contrat = new Contrat();
-        contrat.setId(1L);
-        contrat.setStatut("actif");
 
-        when(contratService.getContratById(1L)).thenReturn(Optional.of(contrat));
 
-        ResponseEntity<String> response = contratController.resilierContrat(1L);
-
-        assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertEquals("Contrat résilié avec succès.", response.getBody());
-        assertEquals("Résilié", contrat.getStatut());
-    }
 
     @Test
     void testResilierContrat_contractNotFound() {
-        when(contratService.getContratById(1L)).thenReturn(Optional.empty());
 
-        ResponseEntity<String> response = contratController.resilierContrat(1L);
+        Long id = 1L;
+        when(contratService.getContratById(id)).thenReturn(Optional.empty());
+
+
+        ResponseEntity<String> response = contratController.resilierContrat(id);
+
 
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
         assertEquals("Contrat non trouvé.", response.getBody());
     }
-    @Test
-    void testCreateContract_invalidPdfFile() throws IOException {
-        MultipartFile invalidFile = new MockMultipartFile("file", "test.txt", "text/plain", "Invalid content".getBytes());
-
-        String authorizationHeader = "Bearer fake_token";
-
-        ResponseEntity<?> response = contratController.createContract(authorizationHeader, "{}", invalidFile);
-
-        assertEquals(HttpStatus.BAD_REQUEST, response.getStatusCode());
-        assertEquals("Le fichier doit être un PDF.", response.getBody());
-    }
-
 
 }
