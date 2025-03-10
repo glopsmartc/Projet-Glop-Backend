@@ -52,4 +52,7 @@ public class Contrat {
     @ManyToOne
     @JoinColumn(name = "offre_id")
     private Offre offre;
+
+    private Float emissionCO2;
+
 }
