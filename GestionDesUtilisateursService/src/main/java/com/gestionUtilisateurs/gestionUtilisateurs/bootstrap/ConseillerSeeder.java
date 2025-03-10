@@ -6,13 +6,12 @@ import com.gestionUtilisateurs.gestionUtilisateurs.model.UtilisateurRepository;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.Role;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.RoleEnum;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.RoleRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 
 @Component
@@ -38,12 +37,14 @@ public class ConseillerSeeder implements ApplicationListener<ContextRefreshedEve
         this.createConseiller();
     }
 
+    @Value("${conseiller.password}")
+    private String motDePasse;
     public void createConseiller() {
         //DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
         RegisterUserDto userDto = new RegisterUserDto();
         userDto.setNom("Super conseiller");
         userDto.setEmail("super.conseiller@email.com");
-        userDto.setPassword("123456");
+        userDto.setPassword(motDePasse);
         userDto.setPrenom("rawan");
         userDto.setAdresse("LILLE");
         userDto.setSexe("Feminin");
