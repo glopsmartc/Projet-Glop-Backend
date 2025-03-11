@@ -45,7 +45,7 @@ public class MedecinSeeder implements ApplicationListener<ContextRefreshedEvent>
         RegisterUserDto userDto = new RegisterUserDto();
         userDto.setNom("medecin_1");
         userDto.setEmail("medecin1@email.com");
-        userDto.setPassword(motDePasse);  // Utilisation du mot de passe depuis la variable d'environnement
+        userDto.setPassword(motDePasse);
         userDto.setPrenom("Jean");
         userDto.setAdresse("Lyon");
         userDto.setSexe("Masculin");
