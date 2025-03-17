@@ -6,6 +6,7 @@ import com.gestionUtilisateurs.gestionUtilisateurs.model.UtilisateurRepository;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.Role;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.RoleEnum;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.roles.RoleRepository;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -15,6 +16,8 @@ import java.util.Optional;
 
 @Component
 public class LogisticienSeeder  implements ApplicationListener<ContextRefreshedEvent> {
+    @Value("${logisticien.password}")
+    private String motDePasse;
 
     private final RoleRepository roleRepository;
     private final UtilisateurRepository userRepository;
@@ -41,7 +44,7 @@ public class LogisticienSeeder  implements ApplicationListener<ContextRefreshedE
         RegisterUserDto userDto = new RegisterUserDto();
         userDto.setNom("logisticien_1");
         userDto.setEmail("logisticien1@email.com");
-        userDto.setPassword("123456");
+        userDto.setPassword(motDePasse);
         userDto.setPrenom("salma");
         userDto.setAdresse("PARIS");
         userDto.setSexe("Feminin");
