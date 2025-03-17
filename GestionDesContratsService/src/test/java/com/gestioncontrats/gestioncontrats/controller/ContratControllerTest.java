@@ -1,5 +1,5 @@
 package com.gestioncontrats.gestioncontrats.controller;
-
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gestioncontrats.gestioncontrats.config.UserClientService;
 import com.gestioncontrats.gestioncontrats.dto.CreateContractRequest;
@@ -14,6 +14,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mock.web.MockMultipartFile;
@@ -21,13 +22,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 
 class ContratControllerTest {
@@ -222,7 +226,7 @@ class ContratControllerTest {
         when(contratService.getContratById(anyLong())).thenReturn(java.util.Optional.empty());
 
         ResponseStatusException exception = assertThrows(ResponseStatusException.class, () -> {
-            contratController.getContratById(999L); // Invalid ID
+            contratController.getContratById(999L);
         });
 
         assertEquals(HttpStatus.NOT_FOUND, exception.getStatusCode());
@@ -262,5 +266,52 @@ class ContratControllerTest {
         assertEquals(0, response.getBody().size());
     }
 
+
+    @Test
+    void testDownloadContractPdf_fileNotFound() {
+        Long id = 1L;
+        when(contratService.getContractPdf(id)).thenThrow(new IllegalArgumentException("Fichier non trouvé"));
+
+
+        ResponseEntity<Object> response = contratController.downloadContractPdf(id);
+
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("Fichier non trouvé", response.getBody());
+    }
+
+
+    @Test
+    void testGetUserContractsId_noContractsFound() {
+
+        String token = "Bearer token";
+        UtilisateurDTO user = new UtilisateurDTO();
+        user.setEmail("client@example.com");
+        when(utilisateurService.getAuthenticatedUser("token")).thenReturn(user);
+        when(contratService.getContratsByClientEmail("client@example.com")).thenReturn(new ArrayList<>());
+
+
+        ResponseEntity<List<Long>> response = contratController.getUserContractsId(token);
+
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals(Collections.emptyList(), response.getBody());
+    }
+
+
+
+    @Test
+    void testResilierContrat_contractNotFound() {
+
+        Long id = 1L;
+        when(contratService.getContratById(id)).thenReturn(Optional.empty());
+
+
+        ResponseEntity<String> response = contratController.resilierContrat(id);
+
+
+        assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
+        assertEquals("Contrat non trouvé.", response.getBody());
+    }
 
 }

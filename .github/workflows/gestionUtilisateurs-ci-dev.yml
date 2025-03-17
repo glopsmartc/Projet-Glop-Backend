@@ -6,7 +6,8 @@ env:
   MEDECIN_PASSWORD:  ${{secrets.MEDECIN_PASSWORD}}
   LOGISTICIEN_PASSWORD:  ${{secrets.LOGISTICIEN_PASSWORD}}
   CONSEILLER_PASSWORD:  ${{secrets.CONSEILLER_PASSWORD}}
-  
+  JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
 on:
   push:
     branches:

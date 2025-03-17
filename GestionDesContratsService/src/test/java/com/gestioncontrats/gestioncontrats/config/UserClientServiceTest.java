@@ -31,37 +31,34 @@ class UserClientServiceTest {
     void setUp() {
         MockitoAnnotations.openMocks(this);
         userClientService = new UserClientService(restTemplate);
-        // Injecter l'URL du service utilisateur
         userClientService.utilisateurServiceUrl = utilisateurServiceUrl;
     }
 
     @Test
     void testGetAuthenticatedUser() {
-        // Préparer les données de test
         String token = "test-token";
         String url = utilisateurServiceUrl + "/users/current-user";
         UtilisateurDTO mockUser = new UtilisateurDTO();
         mockUser.setEmail("test@example.com");
         ResponseEntity<UtilisateurDTO> responseEntity = new ResponseEntity<>(mockUser, HttpStatus.OK);
 
-        // Configurer le comportement du mock
         when(restTemplate.exchange(eq(url), eq(HttpMethod.GET), any(), eq(UtilisateurDTO.class)))
                 .thenReturn(responseEntity);
 
-        // Appeler la méthode à tester
+
         UtilisateurDTO result = userClientService.getAuthenticatedUser(token);
 
-        // Vérifier le résultat
+
         assertNotNull(result);
         assertEquals("test@example.com", result.getEmail());
 
-        // Vérifier que le mock a été appelé avec les bons arguments
+
         verify(restTemplate).exchange(eq(url), eq(HttpMethod.GET), any(), eq(UtilisateurDTO.class));
     }
 
     @Test
     void testSetDateNaissance() {
-        // les données de test
+
         String token = "test-token";
         LocalDate dateNaissance = LocalDate.of(1990, 1, 1);
         String email = "test@example.com";

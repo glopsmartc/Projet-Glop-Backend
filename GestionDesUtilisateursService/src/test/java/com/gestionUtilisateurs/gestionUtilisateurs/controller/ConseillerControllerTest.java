@@ -12,6 +12,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -39,4 +40,6 @@ class ConseillerControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(mockUser, response.getBody());
     }
+
+
 }

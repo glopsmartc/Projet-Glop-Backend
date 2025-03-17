@@ -18,6 +18,7 @@ import java.util.Optional;
 public class LogisticienSeeder  implements ApplicationListener<ContextRefreshedEvent> {
     @Value("${logisticien.password}")
     private String motDePasse;
+
     private final RoleRepository roleRepository;
     private final UtilisateurRepository userRepository;
 
