@@ -30,6 +30,7 @@ public class UtilisateurController {
         Utilisateur utilisateur = (Utilisateur) authentication.getPrincipal();
 
         UtilisateurDTO utilisateurDTO = new UtilisateurDTO();
+        utilisateurDTO.setId(utilisateur.getIdUser());
         utilisateurDTO.setRole(utilisateur.getRole().getName().toString());
         utilisateurDTO.setUsername(utilisateur.getUsername());
         utilisateurDTO.setEmail(utilisateur.getEmail());
