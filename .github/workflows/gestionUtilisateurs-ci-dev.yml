@@ -3,7 +3,11 @@ name: CI/CD Pipeline Microservice Gestion des utilisateurs
 env:
   EMAIL_USERNAME: ${{ secrets.EMAIL_USERNAME }}
   EMAIL_PASSWORD: ${{ secrets.EMAIL_PASSWORD }}
-  
+  MEDECIN_PASSWORD:  ${{secrets.MEDECIN_PASSWORD}}
+  LOGISTICIEN_PASSWORD:  ${{secrets.LOGISTICIEN_PASSWORD}}
+  CONSEILLER_PASSWORD:  ${{secrets.CONSEILLER_PASSWORD}}
+  JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
 on:
   push:
     branches:

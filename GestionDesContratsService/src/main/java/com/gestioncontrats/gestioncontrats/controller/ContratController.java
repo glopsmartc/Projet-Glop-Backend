@@ -24,8 +24,10 @@ import org.springframework.web.server.ResponseStatusException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.MediaType.MULTIPART_FORM_DATA_VALUE;
 
@@ -151,6 +153,17 @@ public class ContratController {
                     return new ResponseStatusException(HttpStatus.NOT_FOUND, "Contrat non trouvé.");
                 });
     }
+    @GetMapping("/offreDescription/{id}")
+    //@PreAuthorize(("hasRole('CLIENT')"))
+    public ResponseEntity<String> getOffreDescByContratId(@PathVariable Long id) {
+        Contrat contrat = contratService.getContratById(id).get();
+
+        return Optional.ofNullable(contrat)
+                .map(Contrat::getDescription)
+                .map(ResponseEntity::ok)
+                .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Description du contrat non trouvée."));
+    }
+
 
 
     @GetMapping("/user-contracts")
@@ -174,8 +187,34 @@ public class ContratController {
         return ResponseEntity.ok(contrats);
     }
 
-    @GetMapping("/download/{id}")
+    @GetMapping("/user-contracts-id")
     @PreAuthorize("hasRole('CLIENT')")
+    public ResponseEntity<List<Long>> getUserContractsId(@RequestHeader("Authorization") String authorizationHeader) {
+        // Extraction du token
+        String token = authorizationHeader.replace(BEARER, "");
+        // Récupération de l'email à partir du token
+        String clientEmail = utilisateurService.getAuthenticatedUser(token).getEmail();
+
+        // Récupération des contrats
+        List<Contrat> contrats = contratService.getContratsByClientEmail(clientEmail);
+
+        // Log pour vérifier les contrats récupérés
+        log.info("Contrats récupérés pour l'email {}: {}", clientEmail, contrats);
+
+        // Vérifier si aucun contrat n'est trouvé
+        if (contrats.isEmpty()) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
+        }
+
+        // Extraction des IDs des contrats
+        List<Long> contratsIds = contrats.stream()
+                .map(Contrat::getId)
+                .collect(Collectors.toList());
+
+        return ResponseEntity.ok(contratsIds);
+    }
+    @GetMapping("/download/{id}")
+    @PreAuthorize("hasRole('CLIENT') or hasRole('CONSEILLER')")
     public ResponseEntity<Object> downloadContractPdf(@PathVariable Long id) {
         try {
             File pdfFile = contratService.getContractPdf(id);

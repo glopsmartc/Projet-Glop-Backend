@@ -3,7 +3,6 @@ package com.gestionUtilisateurs.gestionUtilisateurs.controller;
 import com.gestionUtilisateurs.gestionUtilisateurs.dto.UtilisateurDTO;
 import com.gestionUtilisateurs.gestionUtilisateurs.model.Utilisateur;
 import com.gestionUtilisateurs.gestionUtilisateurs.service.UserServiceItf;
-import org.springframework.cglib.core.Local;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -13,7 +12,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 
 @RequestMapping("/users")
 @RestController
@@ -32,6 +30,7 @@ public class UtilisateurController {
         Utilisateur utilisateur = (Utilisateur) authentication.getPrincipal();
 
         UtilisateurDTO utilisateurDTO = new UtilisateurDTO();
+        utilisateurDTO.setId(utilisateur.getIdUser());
         utilisateurDTO.setRole(utilisateur.getRole().getName().toString());
         utilisateurDTO.setUsername(utilisateur.getUsername());
         utilisateurDTO.setEmail(utilisateur.getEmail());

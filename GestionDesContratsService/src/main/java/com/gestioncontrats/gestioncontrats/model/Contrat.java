@@ -28,6 +28,7 @@ public class Contrat {
     private boolean bicyclette;
     private Integer nombrePersonnes;
     private LocalDate debutContrat;
+    private Integer offreMinOuMax;// Peut être 1 ou 2
     private String destination;
     private LocalDate dateAller;
     private LocalDate dateRetour;
@@ -39,6 +40,10 @@ public class Contrat {
     private String price;
 
     private String client; //email
+    private String clientNom;
+    private String clientPrenom;
+
+    private String description;
 
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
     @JoinColumn(name = "contrat_id")
@@ -47,4 +52,7 @@ public class Contrat {
     @ManyToOne
     @JoinColumn(name = "offre_id")
     private Offre offre;
+
+    private Float emissionCO2;
+
 }

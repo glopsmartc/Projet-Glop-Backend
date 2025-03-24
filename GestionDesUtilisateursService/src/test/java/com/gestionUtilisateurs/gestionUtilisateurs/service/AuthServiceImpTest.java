@@ -15,8 +15,10 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -119,4 +121,20 @@ class AuthServiceImpTest {
         verify(userRepository, times(1)).save(user);
         verify(emailService, times(1)).sendPasswordResetEmail(eq(email), anyString());
     }
+
+    @Test
+    void testResetPassword_TokenExpired() {
+        String token = "expired-token";
+        String newPassword = "newPassword123";
+        Utilisateur user = new Utilisateur();
+        user.setResetToken(token);
+        user.setResetTokenExpiration(LocalDateTime.now().minusHours(1));
+
+        when(userRepository.findByResetToken(token)).thenReturn(Optional.of(user));
+
+        assertThrows(RuntimeException.class, () -> {
+            authService.resetPassword(token, newPassword);
+        });
+    }
 }
+
